@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  memberships UserCompanySuite[]
+  auditLogs   AuditLog[]         @relation("PerformedAudits")
+}
+
+model Company {
+  id              String    @id @default(uuid())
+  corporateName   String
+  tradingName     String
+  federalDocument String?   @unique
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  memberships        UserCompanySuite[]
+  ChefPartnerProduct ChefPartnerProduct[]
+}
+
+model Suite {
+  id          String             @id @default(uuid())
+  name        String
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  deletedAt   DateTime?
+  memberships UserCompanySuite[]
+}
+
+model UserCompanySuite {
+  id        String    @id @default(uuid())
+  userId    String
+  companyId String?
+  suiteId   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user    User     @relation(fields: [userId], references: [id])
+  company Company? @relation(fields: [companyId], references: [id])
+  suite   Suite    @relation(fields: [suiteId], references: [id])
+}
+
+model AuditLog {
+  id            String      @id @default(uuid())
+  entity        String
+  entityId      String
+  action        AuditAction
+  performedById String?
+  performedBy   User?       @relation("PerformedAudits", fields: [performedById], references: [id])
+  timestamp     DateTime    @default(now())
+  data          Json?
+
+  @@index([entity, entityId])
+  @@index([performedById])
+}
+
+model ChefPartnerProduct {
+  id          String    @id @default(uuid())
+  companyId   String
+  name        String
+  description String?
+  salePrice   Decimal   @db.Decimal(10, 2)
+  costPrice   Decimal?  @db.Decimal(10, 2)
+  isAvailable Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@map("ChefPartner_Products")
+}

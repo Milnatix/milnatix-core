@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    
+    {
+      "name": "Attach NestJS",
+      "type": "pwa-node",
+      "request": "attach",
+      "port": 9229,
+      "restart": false,
+      "timeout": 10000,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "${workspaceFolder}"
+    }
+  ]
+}
