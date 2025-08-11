@@ -11,6 +11,15 @@
       "timeout": 10000,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Attach to Next.js",
+      "type": "node",
+      "request": "attach",
+      "port": 9230,
+      "restart": true,
+      "protocol": "inspector",
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

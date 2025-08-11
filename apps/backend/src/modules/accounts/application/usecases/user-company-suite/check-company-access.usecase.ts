@@ -1,9 +1,9 @@
-import { CheckCompanyAccessRequestDTO } from '@/modules/accounts/application/dtos/user-company-suite/check-company-access.request.dto';
 import { CheckCompanyAccessPortIn } from '@/modules/accounts/ports/in/user-company-suite/check-company-access.port';
 import {
   USER_COMPANY_SUITE_REPOSITORY_PORT_TOKEN,
   UserCompanySuiteRepositoryPortOut,
 } from '@/modules/accounts/ports/out/user-company-suite-repository.port';
+import { CheckCompanyAccessRequestDTO } from '@milnatix-core/dtos';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()

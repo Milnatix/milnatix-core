@@ -12,12 +12,21 @@ export class PrismaCompanyRepositoryAdapter
     await this.prisma.company.create({ data: entity });
   }
 
-  public update(id: string, entity: CompanyEntity): Promise<void> {
-    throw new Error('Method not implemented.');
+  public async update(id: string, entity: CompanyEntity): Promise<void> {
+    await this.prisma.company.update({
+      where: { id },
+      data: entity,
+    });
   }
 
   public list(where?: Partial<CompanyEntity>): Promise<CompanyEntity[]> {
-    throw new Error('Method not implemented.');
+    const companies = this.prisma.company.findMany({
+      where: { ...where, deletedAt: null },
+    });
+
+    return companies.then((companies) =>
+      companies.map((company) => new CompanyEntity(company)),
+    );
   }
 
   public async findOne(
@@ -32,11 +41,14 @@ export class PrismaCompanyRepositoryAdapter
     return new CompanyEntity(company);
   }
 
-  public logicalDelete(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  public async logicalDelete(id: string): Promise<void> {
+    await this.prisma.company.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
   }
 
-  public trueDelete(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  public async trueDelete(id: string): Promise<void> {
+    await this.prisma.company.delete({ where: { id } });
   }
 }

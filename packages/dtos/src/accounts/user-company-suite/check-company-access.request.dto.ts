@@ -1,12 +1,10 @@
-import { UserCompanySuiteEntity } from '@/modules/accounts/domain/entities/user-company-suite.entity';
 import { IsNotEmpty } from 'class-validator';
 
-type CheckCompanyAccessRequestDTOProps = Omit<
-  Pick<UserCompanySuiteEntity, 'userId' | 'companyId' | 'suiteId'>,
-  'companyId'
-> & {
+type CheckCompanyAccessRequestDTOProps = {
+  userId: string;
   companyId: string;
-};
+  suiteId: string;
+}
 
 export class CheckCompanyAccessRequestDTO
   implements CheckCompanyAccessRequestDTOProps

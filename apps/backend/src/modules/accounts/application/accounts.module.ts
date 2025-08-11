@@ -30,6 +30,8 @@ import { AuthGuard } from '../guards/auth.guard';
 import { CompanyGuard } from '../guards/company.guard';
 import { CHECK_COMPANY_ACCESS_PORT_IN_TOKEN } from '../ports/in/user-company-suite/check-company-access.port';
 import { CheckCompanyAccessUseCase } from './usecases/user-company-suite/check-company-access.usecase';
+import { LIST_USERS_PORT_IN_TOKEN } from '../ports/in/user/list.port';
+import { ListUsersUseCase } from './usecases/user/list.usecase';
 
 const useCases: Provider[] = [
   {
@@ -51,6 +53,10 @@ const useCases: Provider[] = [
   {
     provide: CHECK_COMPANY_ACCESS_PORT_IN_TOKEN,
     useClass: CheckCompanyAccessUseCase,
+  },
+  {
+    provide: LIST_USERS_PORT_IN_TOKEN,
+    useClass: ListUsersUseCase,
   },
 ];
 

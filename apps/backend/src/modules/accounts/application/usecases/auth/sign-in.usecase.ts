@@ -31,6 +31,11 @@ import {
   AuthSignInRequestDTO,
   AuthSignInResponseDTO,
 } from '@milnatix-core/dtos';
+import { CompanyEntity } from '@/modules/accounts/domain/entities/company.entity';
+import {
+  COMPANY_REPOSITORY_PORT_TOKEN,
+  CompanyRepositoryPortOut,
+} from '@/modules/accounts/ports/out/company-repository.port';
 
 @Injectable()
 export class SignInUseCase implements SignInPortIn {
@@ -45,6 +50,8 @@ export class SignInUseCase implements SignInPortIn {
     private readonly tokenAdapter: TokenPortOut,
     @Inject(HASH_PORT_OUT_TOKEN)
     private readonly hashAdapter: HashPortOut,
+    @Inject(COMPANY_REPOSITORY_PORT_TOKEN)
+    private readonly companyRepository: CompanyRepositoryPortOut,
   ) {}
 
   public async execute(
@@ -58,11 +65,9 @@ export class SignInUseCase implements SignInPortIn {
         id: signInDTO.suiteId,
       }),
     ]);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    if (!suite) {
-      throw new NotFoundException('Suite not found');
+
+    if (!user || !suite) {
+      throw new NotFoundException(!user ? 'User not found' : 'Suite not found');
     }
 
     const isValidPassword = await this.hashAdapter.compare(
@@ -73,13 +78,26 @@ export class SignInUseCase implements SignInPortIn {
       throw new NotFoundException('User not found');
     }
 
-    const userCompanySuite = await this.userCompanySuiteRepository.findOne({
+    const userCompaniesSuite = await this.userCompanySuiteRepository.list({
       userId: user.id,
       suiteId: suite.id,
     });
 
-    if (!userCompanySuite) {
+    if (userCompaniesSuite.length === 0) {
       throw new ForbiddenException('User not found in suite');
+    }
+
+    const companiesIds = userCompaniesSuite
+      .filter((userCompanySuite) => userCompanySuite.companyId !== null)
+      .map((userCompanySuite) => userCompanySuite.companyId!);
+    let companies: CompanyEntity[] = [];
+
+    if (companiesIds.length > 0) {
+      companies = await this.companyRepository.list({
+        id: {
+          in: companiesIds,
+        },
+      });
     }
 
     const accessToken = this.tokenAdapter.generateAccessToken({
@@ -93,6 +111,11 @@ export class SignInUseCase implements SignInPortIn {
       suiteId: suite.id as SuiteId,
     });
 
-    return AuthMapper.toSignInResponseDTO(accessToken, refreshToken, user);
+    return AuthMapper.toSignInResponseDTO(
+      accessToken,
+      refreshToken,
+      user,
+      companies,
+    );
   }
 }

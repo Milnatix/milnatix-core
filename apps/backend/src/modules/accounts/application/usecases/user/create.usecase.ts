@@ -1,5 +1,3 @@
-import { CreateUserRequestDTO } from '@/modules/accounts/application/dtos/user/create.request.dto';
-import { CreateUserResponseDTO } from '@/modules/accounts/application/dtos/user/create.response.dto';
 import { UserMapper } from '@/modules/accounts/application/mappers/user.mapper';
 import { CreateUserPortIn } from '@/modules/accounts/ports/in/user/create.port';
 import {
@@ -25,6 +23,10 @@ import {
   SuiteRepositoryPortOut,
 } from '@/modules/accounts/ports/out/suite-repository.port';
 import { UserCompanySuiteEntity } from '../../../domain/entities/user-company-suite.entity';
+import {
+  CreateUserRequestDTO,
+  CreateUserResponseDTO,
+} from '@milnatix-core/dtos';
 
 @Injectable()
 export class CreateUserUseCase implements CreateUserPortIn {

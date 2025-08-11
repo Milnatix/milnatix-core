@@ -1,6 +1,9 @@
+import {
+  CreateUserRequestDTO,
+  CreateUserResponseDTO,
+  ListUsersResponseDTO,
+} from '@milnatix-core/dtos';
 import { UserEntity } from '../../domain/entities/user.entity';
-import { CreateUserRequestDTO } from '../dtos/user/create.request.dto';
-import { CreateUserResponseDTO } from '../dtos/user/create.response.dto';
 
 export class UserMapper {
   static fromCreateUserRequestDTO(user: CreateUserRequestDTO): UserEntity {
@@ -14,6 +17,17 @@ export class UserMapper {
     return new CreateUserResponseDTO({
       id: user.id,
       email: user.email,
+    });
+  }
+
+  static toListUsersResponseDTO(
+    user: UserEntity,
+    suiteIds: string[],
+  ): ListUsersResponseDTO {
+    return new ListUsersResponseDTO({
+      id: user.id,
+      email: user.email,
+      suiteIds,
     });
   }
 }

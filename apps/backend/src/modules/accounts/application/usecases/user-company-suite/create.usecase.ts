@@ -1,5 +1,3 @@
-import { CreateUserCompanySuiteRequestDTO } from '@/modules/accounts/application/dtos/user-company-suite/create.request.dto';
-import { CreateUserCompanySuiteResponseDTO } from '@/modules/accounts/application/dtos/user-company-suite/create.response.dto';
 import { UserCompanySuiteMappper } from '@/modules/accounts/application/mappers/user-company-suite.mapper';
 import { CreateUserCompanySuitePortIn } from '@/modules/accounts/ports/in/user-company-suite/create.port';
 import {
@@ -18,6 +16,10 @@ import {
   USER_REPOSITORY_PORT_TOKEN,
   UserRepositoryPortOut,
 } from '@/modules/accounts/ports/out/user-repository.port';
+import {
+  CreateUserCompanySuiteRequestDTO,
+  CreateUserCompanySuiteResponseDTO,
+} from '@milnatix-core/dtos';
 import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
 
 export class CreateUserCompanySuiteUseCase
@@ -76,12 +78,16 @@ export class CreateUserCompanySuiteUseCase
         userCompanySuiteDB,
       );
 
-      return UserCompanySuiteMappper.entityToCreateResponseDTO(userCompanySuiteDB);
+      return UserCompanySuiteMappper.entityToCreateResponseDTO(
+        userCompanySuiteDB,
+      );
     }
 
     const newUserCompanySuite =
       UserCompanySuiteMappper.createRequestDTOToEntity(userCompanySuiteDTO);
     await this.userCompanySuiteRepository.create(newUserCompanySuite);
-    return UserCompanySuiteMappper.entityToCreateResponseDTO(newUserCompanySuite);
+    return UserCompanySuiteMappper.entityToCreateResponseDTO(
+      newUserCompanySuite,
+    );
   }
 }

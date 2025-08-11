@@ -1,6 +1,8 @@
+import {
+  CreateUserCompanySuiteRequestDTO,
+  CreateUserCompanySuiteResponseDTO,
+} from '@milnatix-core/dtos';
 import { UserCompanySuiteEntity } from '../../domain/entities/user-company-suite.entity';
-import { CreateUserCompanySuiteRequestDTO } from '../dtos/user-company-suite/create.request.dto';
-import { CreateUserCompanySuiteResponseDTO } from '../dtos/user-company-suite/create.response.dto';
 
 export class UserCompanySuiteMappper {
   public static createRequestDTOToEntity(
