@@ -32,6 +32,8 @@ import { CHECK_COMPANY_ACCESS_PORT_IN_TOKEN } from '../ports/in/user-company-sui
 import { CheckCompanyAccessUseCase } from './usecases/user-company-suite/check-company-access.usecase';
 import { LIST_USERS_PORT_IN_TOKEN } from '../ports/in/user/list.port';
 import { ListUsersUseCase } from './usecases/user/list.usecase';
+import { REFRESH_TOKEN_PORT_IN_TOKEN } from '../ports/in/auth/refresh-token.port';
+import { RefreshTokenUseCase } from './usecases/auth/refresh-token.usecase';
 
 const useCases: Provider[] = [
   {
@@ -41,6 +43,10 @@ const useCases: Provider[] = [
   {
     provide: SIGN_IN_PORT_IN_TOKEN,
     useClass: SignInUseCase,
+  },
+  {
+    provide: REFRESH_TOKEN_PORT_IN_TOKEN,
+    useClass: RefreshTokenUseCase,
   },
   {
     provide: CREATE_COMPANY_PORT_IN_TOKEN,

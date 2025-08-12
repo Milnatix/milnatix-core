@@ -1,4 +1,7 @@
-import { AuthSignInResponseDTO } from '@milnatix-core/dtos';
+import {
+  AuthRefreshTokenResponseDTO,
+  AuthSignInResponseDTO,
+} from '@milnatix-core/dtos';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { CompanyEntity } from '../../domain/entities/company.entity';
 
@@ -19,6 +22,16 @@ export class AuthMapper {
         id: company.id,
         tradingName: company.tradingName,
       })),
+    });
+  }
+
+  public static toRefreshTokenResponseDTO(
+    accessToken: string,
+    refreshToken: string,
+  ): AuthRefreshTokenResponseDTO {
+    return new AuthRefreshTokenResponseDTO({
+      accessToken,
+      refreshToken,
     });
   }
 }
