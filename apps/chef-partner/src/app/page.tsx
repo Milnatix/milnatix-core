@@ -4,9 +4,11 @@ import { SignInFormData, signInSchema } from "@/application/schemas/auth/sign-in
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Button, Field, Fieldset, Input, Stack } from "@chakra-ui/react"
 import { signIn, setSession } from "@/application/facades/auth.facade";
 import { useRouter } from 'next/navigation';
+import Input from "@/components/atom/Input";
+import Button from "@/components/atom/Button";
+import Card from "@/components/atom/Card";
 
 export const LoginPage: React.FC = () => {
   const router = useRouter();
@@ -30,30 +32,22 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
-    setSession(response.value!);
+    await setSession(response.value!);
     goToHome();
   };
 
   return (
-    <div className="h-[100dvh] w-[100dvw] justify-center items-center flex flex-col">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Fieldset.Root size="md" maxW="md">
-          <Stack>
-            <Fieldset.Legend>ChefPartner</Fieldset.Legend>
-          </Stack>
-          <Field.Root invalid={!!errors.email}>
-            <Field.Label >Email</Field.Label>
-            <Input type="email" autoFocus {...register("email")} />
-            <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
-          </Field.Root>
-          <Field.Root invalid={!!errors.password}>
-            <Field.Label>Senha</Field.Label>
-            <Input type="password" {...register("password")} />
-            <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
-          </Field.Root>
-          <Button type="submit" loading={isSubmitting}>Entrar</Button>
-        </Fieldset.Root>
-      </form>
+    <div className="h-[100dvh] w-[100dvw] justify-center items-center flex flex-col bg-gradient-app">
+      <Card className="flex flex-col items-center gap-2">
+        <h1 className="text-3xl">ChefPartner</h1>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full">
+          <Input type="email" label="E-mail" error={errors.email?.message} autoFocus {...register("email")} />
+          <Input type="password" label="Senha" error={errors.password?.message} {...register("password")} />
+          <Button type="submit" variant="primary">
+            Acessar
+          </Button>
+        </form>
+      </Card>
     </div>
   )
 }

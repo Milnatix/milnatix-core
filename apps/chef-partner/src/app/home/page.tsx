@@ -1,13 +1,15 @@
-import React from 'react'
-import Link from 'next/link';
+'use client'
 
-export const HomePage: React.FC = () => {
+
+import FloatingMenu from '@/components/molecule/FloatingMenu';
+import React from 'react';
+
+const HomePage: React.FC = () => {
   return (
-    <div className='flex flex-col'>
-      Hello from home
-      <Link href="/products">Produtos</Link>
+    <div className='bg-gradient-app h-screen w-screen overflow-hidden'>
+      <FloatingMenu items={[{ label: 'Produtos', path: '/products' }]} />
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

@@ -12,15 +12,30 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+@theme {
+  --color-redappetite: oklch(62.84% 0.242 23.85);
+  --color-green-fresh: oklch(64.26% 0.162 177.37);
+  --color-beige-bg: oklch(98.58% 0.011 90.68);
+}
+
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.bg-gradient-app {
+  background: linear-gradient(
+    135deg,
+    oklch(98.58% 0.011 90.68) 0%, /* beige-bg */
+    oklch(64.26% 0.162 177.37 / 0.15) 40%, /* green-fresh bem transparente */
+    oklch(62.84% 0.242 23.85 / 0.08) 100% /* red-appetite mais suave ainda */
+  );
 }
