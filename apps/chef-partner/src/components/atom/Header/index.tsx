@@ -7,23 +7,19 @@ import Button from '../Button';
 
 interface HeaderProps {
   title: string;
+  onGoBack: () => void;
   disableBack?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, disableBack }) => {
+const Header: React.FC<HeaderProps> = ({ title, disableBack, onGoBack }) => {
   const router = useRouter();
-
-  const goBack = () => {
-    router.back();
-  }
-
   return (
     <header className="flex items-center w-full bg-white border-b-1 border-redappetite">
       <div className='flex-1'>
         <Button
           aria-label="Voltar"
           className="p-2 rounded hover:bg-gray-200 transition bg-white"
-          onClick={goBack}
+          onClick={onGoBack}
           disabled={disableBack}
         >
           <FaAngleLeft size={30} className='text-redappetite' />

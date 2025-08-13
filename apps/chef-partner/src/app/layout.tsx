@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import GlobalAlert from "@/components/molecule/GlobalAlert";
+import GlobalConfirmModal from "@/components/molecule/GlobalConfirmModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +30,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <GlobalAlert />
+        <GlobalConfirmModal />
       </body>
     </html>
   );

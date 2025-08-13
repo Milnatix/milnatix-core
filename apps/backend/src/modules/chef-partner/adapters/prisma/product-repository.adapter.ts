@@ -36,8 +36,24 @@ export class PrismaProductRepositoryAdapter
     );
   }
 
-  findOne(where: Partial<ProductEntity>): Promise<ProductEntity | null> {
-    throw new Error('Method not implemented.');
+  public async findOne(
+    where: Partial<ProductEntity>,
+  ): Promise<ProductEntity | null> {
+    const product = await this.prisma.chefPartnerProduct.findFirst({
+      where: { ...where, deletedAt: null },
+    });
+    if (!product) {
+      return null;
+    }
+    return new ProductEntity({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      salePrice: product.salePrice.toNumber(),
+      costPrice: product.costPrice?.toNumber() || null,
+      isAvailable: product.isAvailable,
+      companyId: product.companyId,
+    });
   }
 
   logicalDelete(id: string): Promise<void> {

@@ -67,7 +67,9 @@ export class SignInUseCase implements SignInPortIn {
     ]);
 
     if (!user || !suite) {
-      throw new NotFoundException(!user ? 'User not found' : 'Suite not found');
+      throw new NotFoundException(
+        !user ? 'Usuário não encontrado' : 'Projeto não encontrado',
+      );
     }
 
     const isValidPassword = await this.hashAdapter.compare(
@@ -75,7 +77,7 @@ export class SignInUseCase implements SignInPortIn {
       user.password,
     );
     if (!isValidPassword) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Usuário não encontrado');
     }
 
     const userCompaniesSuite = await this.userCompanySuiteRepository.list({
@@ -84,7 +86,7 @@ export class SignInUseCase implements SignInPortIn {
     });
 
     if (userCompaniesSuite.length === 0) {
-      throw new ForbiddenException('User not found in suite');
+      throw new ForbiddenException('Usuário não pertence ao projeto');
     }
 
     const companiesIds = userCompaniesSuite

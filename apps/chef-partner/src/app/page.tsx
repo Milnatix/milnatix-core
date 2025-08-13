@@ -4,14 +4,17 @@ import { SignInFormData, signInSchema } from "@/application/schemas/auth/sign-in
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { signIn, setSession } from "@/application/facades/auth.facade";
+import { signIn } from "@/application/facades/auth.facade";
 import { useRouter } from 'next/navigation';
 import Input from "@/components/atom/Input";
 import Button from "@/components/atom/Button";
 import Card from "@/components/atom/Card";
+import { useAlertStore } from "@/shared/stores/alert.store";
+import { setSession } from "@/application/facades/session.facade";
 
 export const LoginPage: React.FC = () => {
   const router = useRouter();
+  const { show } = useAlertStore();
 
   const {
     register,
@@ -23,12 +26,18 @@ export const LoginPage: React.FC = () => {
   });
 
   const goToHome = () => {
-    router.push("/home");
+    router.replace("/home");
   };
 
   const onSubmit = async (data: SignInFormData) => {
     const response = await signIn(data);
     if (!response.success) {
+      show({
+        title: 'Atenção!',
+        message: response.error.message,
+        type: "error",
+        duration: 10000,
+      })
       return;
     }
 
@@ -43,7 +52,7 @@ export const LoginPage: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full">
           <Input type="email" label="E-mail" error={errors.email?.message} autoFocus {...register("email")} />
           <Input type="password" label="Senha" error={errors.password?.message} {...register("password")} />
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" loading={isSubmitting}>
             Acessar
           </Button>
         </form>

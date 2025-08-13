@@ -1,6 +1,6 @@
 import { ProductFormData } from "@/application/schemas/product/form.schema";
 import { CreateProductPortIn } from "@/ports/in/products/create.port";
-import { ProductsRepositoryPortOut } from "@/ports/out/product.port";
+import { ProductsRepositoryPortOut } from "@/ports/out/product-repository.port";
 import { SessionServicePortOut } from "@/ports/out/session.port";
 import { AuthenticatedRequestParams } from "@/shared/types/authenticated-request-params.type";
 import { Result } from "@/shared/types/Result.type";

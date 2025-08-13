@@ -7,6 +7,7 @@ export class SetSessionUseCase implements SetSessionPortIn {
   constructor(private readonly sessionService: SessionServicePortOut) {}
 
   public async execute(session: AuthSignInResponseDTO): Promise<void> {
+    console.log('setSession usecase');
     await this.sessionService.setSession(session)
   }
 

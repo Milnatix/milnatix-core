@@ -4,7 +4,7 @@ import {
   PRODUCT_REPOSITORY_PORT_TOKEN,
   ProductRepositoryPortOut,
 } from '@/modules/chef-partner/ports/out/product-repository.port';
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { CreateProductInputDTO } from '../../dtos/product/create.input.dto';
 import { CreateProductResponseDTO } from '@milnatix-core/dtos';
 
@@ -19,6 +19,15 @@ export class CreateProductUseCase implements CreateProductPortIn {
     productDTO: CreateProductInputDTO,
   ): Promise<CreateProductResponseDTO> {
     const product = ProductMapper.createInputDTOToEntity(productDTO);
+    const productWithSameName = await this.productRepository.findOne({
+      name: product.name,
+      companyId: product.companyId,
+    });
+
+    if (productWithSameName) {
+      throw new ConflictException('Já existe um produto com o mesmo nome');
+    }
+
     await this.productRepository.create(product);
     return ProductMapper.entityToCreateResponseDTO(product);
   }

@@ -1,3 +1,6 @@
+import { ErrorResponse } from "../types/error-response.type";
+import { HttpStatusCode } from "../types/status-code.type";
+
 export interface HttpRequest {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   url: string;
@@ -7,7 +10,7 @@ export interface HttpRequest {
 }
 
 export interface HttpResponse<T = any> {
-  status: number;
+  status: HttpStatusCode;
   data: T;
   headers: Record<string, any>;
 }
@@ -15,3 +18,4 @@ export interface HttpResponse<T = any> {
 export interface HttpClientPort {
   request<T = any>(req: HttpRequest): Promise<HttpResponse<T>>;
 }
+

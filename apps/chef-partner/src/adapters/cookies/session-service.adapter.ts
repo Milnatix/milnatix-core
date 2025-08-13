@@ -3,38 +3,41 @@ import { SessionServicePortOut } from "@/ports/out/session.port";
 import { AuthSignInResponseDTO } from "@milnatix-core/dtos";
 import { CryptPortOut } from '@/ports/out/crypt.port';
 import { TokenPortOut } from '@/ports/out/token.port';
+import { AuthRepositoryPortOut } from '@/ports/out/auth-repository.port';
+import { setValueInCookies, getValueFromCookies } from './actions';
 
 export class SessionService implements SessionServicePortOut {
 
   constructor(
     private readonly crypt: CryptPortOut<AuthSignInResponseDTO>,
-    private readonly token: TokenPortOut
+    private readonly token: TokenPortOut,
+    private readonly authRepository: AuthRepositoryPortOut
   ) {}
 
   public async setSession(session: AuthSignInResponseDTO): Promise<void> {
-    const cookieStore = await cookies();
     const encryptedSession = await this.crypt.encrypt(session);
-    cookieStore.set('session', encryptedSession, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7
-    });
+    setValueInCookies('session', encryptedSession);
   }
 
   public async getSession(): Promise<AuthSignInResponseDTO> {
-    const cookieStore = await cookies();
-    const cookie = cookieStore.get('session');
+    const encryptedSession = await getValueFromCookies('session');
 
-    if (!cookie?.value) {
+    if (!encryptedSession) {
       throw new Error('Session not found');
     }
 
-    const session = await this.crypt.decrypt(cookie.value);
-
-    const tokenExpired = await this.token.isExpired(session.accessToken);
+    const session = await this.crypt.decrypt(encryptedSession);
+    const tokenExpired = this.token.isExpired(session.accessToken);
     if (tokenExpired) {
-      throw new Error('Token expired');
+      const result = await this.authRepository.refresh({refreshToken: session.refreshToken});
+      if (!result.success) {
+        throw result.error;
+      }
+      const refreshedSession = result.value;
+      const newSession = {...session, ...refreshedSession};
+      console.log('oldSession', session, 'newSession', newSession);
+      await this.setSession(newSession);
+      return newSession;
     }
 
     return session;

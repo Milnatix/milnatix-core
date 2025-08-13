@@ -5,7 +5,7 @@ import Button from '@/components/atom/Button';
 
 interface FormTemplateProps {
   title: string;
-  onCancel?: () => void;
+  onCancel: () => void;
   onSubmit: () => void | Promise<void>;
   isSubmitting?: boolean;
   children: ReactNode;
@@ -36,7 +36,7 @@ const FormTemplate: React.FC<FormTemplateProps> = ({
 
   return (
     <div className="bg-gradient-app h-[100dvh] w-screen flex flex-col">
-      <Header title={title} disableBack={isSubmitting} />
+      <Header title={title} disableBack={isSubmitting} onGoBack={onCancel} />
       <div className="flex flex-1 justify-center items-center px-2 py-4">
         <Card className="h-full max-w-md w-full">
           <form
@@ -49,11 +49,9 @@ const FormTemplate: React.FC<FormTemplateProps> = ({
             <div className="flex flex-col flex-1 gap-2">{children}</div>
 
             <div className="flex justify-end gap-2 mt-4">
-              {onCancel && (
-                <Button type="button" disabled={isSubmitting} className="flex-1" onClick={onCancel}>
-                  Cancelar
-                </Button>
-              )}
+              <Button type="button" disabled={isSubmitting} className="flex-1" onClick={onCancel}>
+                Cancelar
+              </Button>
               <Button type="submit" variant="primary" loading={isSubmitting} className="flex-1">
                 Salvar
               </Button>

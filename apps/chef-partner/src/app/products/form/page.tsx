@@ -9,10 +9,12 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import TextArea from '@/components/atom/TextArea';
+import { useAlertStore } from '@/shared/stores/alert.store';
 
 
 const ProductFormPage: React.FC = () => {
   const router = useRouter();
+  const { show } = useAlertStore();
 
   const {
     register,
@@ -29,18 +31,44 @@ const ProductFormPage: React.FC = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     const result = await create(data);
+    console.log("create result:", result);
+
+    if (!result.success) {
+      show({
+        title: 'Atenção!',
+        message: result.error.message,
+        type: "error",
+        duration: 10000,
+      })
+      return;
+    }
+
+    router.replace('/products');
   });
 
-  const onCancel = () => {
-    router.back();
-  };
+  const onCancel = () => router.replace('/products');;
 
   return (
     <FormTemplate title="Novo produto" onCancel={onCancel} onSubmit={onSubmit} isSubmitting={isSubmitting}>
-      <Input label="Nome (*)" autoFocus maxLength={255} {...register('name')} error={errors.name?.message} />
-      <TextArea label="Descrição" maxLength={255} {...register('description')} error={errors.description?.message} />
-      <Input type='number' label="Preço (*)" {...register('salePrice', { valueAsNumber: true })} error={errors.salePrice?.message} />
-      <Input type='number' label="Preço de custo" {...register('costPrice', { valueAsNumber: true })} error={errors.costPrice?.message} />
+      <Input label="Nome (*)"
+        autoFocus
+        maxLength={255}
+        {...register('name')}
+        error={errors.name?.message} />
+      <TextArea label="Descrição"
+        maxLength={255}
+        {...register('description')}
+        error={errors.description?.message} />
+      <Input label="Preço (*)"
+        type='number'
+        {...register('salePrice', { valueAsNumber: true })}
+        error={errors.salePrice?.message}
+        step="0.01" />
+      <Input label="Preço de custo"
+        type='number'
+        {...register('costPrice', { valueAsNumber: true })}
+        error={errors.costPrice?.message}
+        step="0.01" />
     </FormTemplate>
   );
 };
