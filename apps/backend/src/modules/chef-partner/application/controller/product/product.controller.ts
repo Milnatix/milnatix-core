@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Inject,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -23,6 +25,10 @@ import {
   CreateProductResponseDTO,
   ListProductResponseDTO,
 } from '@milnatix-core/dtos';
+import {
+  DELETE_PRODUCT_PORT_IN_TOKEN,
+  DeleteProductPortIn,
+} from '@/modules/chef-partner/ports/in/product/delete.port';
 
 @UseGuards(AuthGuard, CompanyGuard)
 @Controller('product')
@@ -32,6 +38,8 @@ export class ProductController {
     private readonly createProductUseCase: CreateProductPortIn,
     @Inject(LIST_PRODUCT_PORT_IN_TOKEN)
     private readonly listProductUseCase: ListProductUseCase,
+    @Inject(DELETE_PRODUCT_PORT_IN_TOKEN)
+    private readonly deleteProductUseCase: DeleteProductPortIn,
   ) {}
 
   @Post()
@@ -52,5 +60,11 @@ export class ProductController {
     @CompanyId() companyId: string,
   ): Promise<ListProductResponseDTO[]> {
     return await this.listProductUseCase.execute({ companyId });
+  }
+
+  @Delete(':productId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async delete(@Param('productId') productId: string): Promise<void> {
+    await this.deleteProductUseCase.execute({ productId });
   }
 }

@@ -8,6 +8,8 @@ import { PrismaProductRepositoryAdapter } from '../adapters/prisma/product-repos
 import { AccountsModule } from '@/modules/accounts/application/accounts.module';
 import { LIST_PRODUCT_PORT_IN_TOKEN } from '../ports/in/product/list.port';
 import { ListProductUseCase } from './usecases/product/list.usecase';
+import { DELETE_PRODUCT_PORT_IN_TOKEN } from '../ports/in/product/delete.port';
+import { DeleteProductUseCase } from './usecases/product/delete.usecase';
 
 const useCases: Provider[] = [
   {
@@ -17,6 +19,10 @@ const useCases: Provider[] = [
   {
     provide: LIST_PRODUCT_PORT_IN_TOKEN,
     useClass: ListProductUseCase,
+  },
+  {
+    provide: DELETE_PRODUCT_PORT_IN_TOKEN,
+    useClass: DeleteProductUseCase,
   },
 ];
 

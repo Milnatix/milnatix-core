@@ -56,8 +56,11 @@ export class PrismaProductRepositoryAdapter
     });
   }
 
-  logicalDelete(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  public async logicalDelete(id: string): Promise<void> {
+    await this.prisma.chefPartnerProduct.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
   }
 
   trueDelete(id: string): Promise<void> {
