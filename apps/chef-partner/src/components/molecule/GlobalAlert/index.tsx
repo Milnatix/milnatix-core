@@ -27,7 +27,7 @@ function typeClasses(type: string) {
 }
 
 export default function GlobalAlert() {
-  const { toasts, hide } = useAlertStore();
+  const { toasts, hideAlert: hide } = useAlertStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);

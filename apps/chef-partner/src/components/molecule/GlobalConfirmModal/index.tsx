@@ -1,15 +1,26 @@
 "use client";
 
+import Button from "@/components/atom/Button";
 import { useConfirmModalStore } from "@/shared/stores/confirm-modal.store";
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 const GlobalConfirmModal: React.FC = () => {
-  const { current, hide } = useConfirmModalStore();
+  const { current, hideConfirmModal } = useConfirmModalStore();
+  
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => setMounted(true), []);
+  
   if (!mounted || !current) return null;
+
+  const handleConfirmButton = async () => {
+    setLoading(true);
+    await current.onConfirm();
+    hideConfirmModal();
+    setLoading(false);
+  }
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 px-2">
@@ -18,21 +29,23 @@ const GlobalConfirmModal: React.FC = () => {
         <p className="text-sm text-gray-700 mb-4">{current.message}</p>
 
         <div className="flex justify-end gap-2">
-          <button
-            onClick={hide}
+          <Button
+            type="button"
+            onClick={hideConfirmModal}
             className="px-4 py-2 text-sm bg-gray-200 rounded hover:bg-gray-300 transition"
+            variant={current.cancelButtonVariant || "default"}
+            disabled={loading}
           >
             {current.cancelText || "Cancelar"}
-          </button>
-          <button
-            onClick={() => {
-              current.onConfirm();
-              hide();
-            }}
-            className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          </Button>
+          <Button
+            type="button"
+            variant={current.confirmButtonVariant || "primary"}
+            loading={loading}
+            onClick={handleConfirmButton}
           >
             {current.confirmText || "Confirmar"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>,

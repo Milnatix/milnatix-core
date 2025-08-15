@@ -1,7 +1,9 @@
 import React from "react";
 
+export type ButtonVariants =  "primary" | "secondary" | "danger" | "default";
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "default";
+  variant?: ButtonVariants;
   loading?: boolean;
   children: React.ReactNode;
 }
@@ -35,20 +37,40 @@ const Button: React.FC<ButtonProps> = ({
     border
   `;
 
-  const variants = {
+  const variants: Record<string, string> = {
     default: `
       bg-gray-100
-      text-brand-700
+      text-gray-800
       border-transparent
       hover:bg-gray-200
-      focus-visible:ring-brand-500
+      focus-visible:ring-gray-500
       focus-visible:ring-offset-white
     `,
     primary: `
+      bg-green-fresh
+      text-white
+      border-transparent
+      hover:bg-green-fresh/90
+      focus-visible:ring-green-fresh
+      focus-visible:ring-offset-white
+      shadow-sm
+      hover:shadow-md
+    `,
+    secondary: `
+      bg-[var(--color-blue-action)]
+      text-white
+      border-transparent
+      hover:bg-[var(--color-blue-action)/90]
+      focus-visible:ring-[var(--color-blue-action)]
+      focus-visible:ring-offset-white
+      shadow-sm
+      hover:shadow-md
+    `,
+    danger: `
       bg-redappetite
       text-white
       border-transparent
-      hover:bg-red-600
+      hover:bg-redappetite/90
       focus-visible:ring-redappetite
       focus-visible:ring-offset-white
       shadow-sm

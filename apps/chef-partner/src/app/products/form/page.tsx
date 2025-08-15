@@ -14,7 +14,7 @@ import { useAlertStore } from '@/shared/stores/alert.store';
 
 const ProductFormPage: React.FC = () => {
   const router = useRouter();
-  const { show } = useAlertStore();
+  const { showAlert: show } = useAlertStore();
 
   const {
     register,

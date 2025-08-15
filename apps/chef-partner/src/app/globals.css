@@ -16,6 +16,7 @@
   --color-redappetite: oklch(62.84% 0.242 23.85);
   --color-green-fresh: oklch(64.26% 0.162 177.37);
   --color-beige-bg: oklch(98.58% 0.011 90.68);
+  --color-blue-action: oklch(55% 0.1 260); 
 }
 
 /* @media (prefers-color-scheme: dark) {

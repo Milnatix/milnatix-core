@@ -14,7 +14,7 @@ import { setSession } from "@/application/facades/session.facade";
 
 export const LoginPage: React.FC = () => {
   const router = useRouter();
-  const { show } = useAlertStore();
+  const { showAlert: show } = useAlertStore();
 
   const {
     register,

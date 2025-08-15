@@ -14,5 +14,6 @@ export async function setValueInCookies(key: string, value: string) {
 
 export async function getValueFromCookies(key: string) {
   const cookieStore = await cookies();
+  console.log('cookieStore', cookieStore)
   return cookieStore.get(key)?.value;
 }

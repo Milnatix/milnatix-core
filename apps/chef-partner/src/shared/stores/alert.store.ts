@@ -22,8 +22,8 @@ export type AlertItem = {
 
 type AlertState = {
   toasts: AlertItem[];
-  show: (input: AlertInput) => string;      
-  hide: (id: string) => void;
+  showAlert: (input: AlertInput) => string;      
+  hideAlert: (id: string) => void;
   clear: () => void;
 };
 
@@ -33,7 +33,7 @@ function uid() {
 
 export const useAlertStore = create<AlertState>((set, get) => ({
   toasts: [],
-  show: ({ message, title, type = "error", duration = 4000 }) => {
+  showAlert: ({ message, title, type = "error", duration = 4000 }) => {
     const id = uid();
     const toast: AlertItem = { id, message, title, type, duration };
     set((s) => ({ toasts: [toast, ...s.toasts] })); 
@@ -42,11 +42,11 @@ export const useAlertStore = create<AlertState>((set, get) => ({
     if (duration > 0) {
       setTimeout(() => {
         const exists = get().toasts.some(t => t.id === id);
-        if (exists) get().hide(id);
+        if (exists) get().hideAlert(id);
       }, duration);
     }
     return id;
   },
-  hide: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
+  hideAlert: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
   clear: () => set({ toasts: [] }),
 }));
