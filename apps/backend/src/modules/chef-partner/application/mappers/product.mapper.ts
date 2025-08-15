@@ -1,10 +1,12 @@
 import { ProductEntity } from '../../domain/entities/product.entity';
 import {
-  CreateProductRequestDTO,
-  CreateProductResponseDTO,
+  FormProductRequestDTO,
+  FormProductResponseDTO,
   ListProductResponseDTO,
+  ProductDetailsResponseDTO,
 } from '@milnatix-core/dtos';
 import { CreateProductInputDTO } from '../dtos/product/create.input.dto';
+import { UpdateProductInputDTO } from '../dtos/product/update.input.dto';
 
 export class ProductMapper {
   public static createInputDTOToEntity(
@@ -13,14 +15,14 @@ export class ProductMapper {
     return new ProductEntity({ ...productDTO, isAvailable: true });
   }
 
-  public static entityToCreateResponseDTO(
+  public static entityToFormResponseDTO(
     product: ProductEntity,
-  ): CreateProductResponseDTO {
-    return new CreateProductResponseDTO({ id: product.id, name: product.name });
+  ): FormProductResponseDTO {
+    return new FormProductResponseDTO({ id: product.id, name: product.name });
   }
 
-  public static createRequestToCreateInputDTO(
-    requestDTO: CreateProductRequestDTO,
+  public static formRequestToCreateInputDTO(
+    requestDTO: FormProductRequestDTO,
     companyId: string,
   ): CreateProductInputDTO {
     return new CreateProductInputDTO({ ...requestDTO, companyId });
@@ -34,5 +36,24 @@ export class ProductMapper {
       name: product.name,
       salePrice: product.salePrice,
     });
+  }
+
+  public static entityToDetailsDTO(
+    product: ProductEntity,
+  ): ProductDetailsResponseDTO {
+    return new ProductDetailsResponseDTO({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      salePrice: product.salePrice,
+      costPrice: product.costPrice || 0,
+      isAvailable: product.isAvailable,
+    });
+  }
+
+  public static updateProductInputDTOToEntity(
+    productDTO: UpdateProductInputDTO,
+  ): ProductEntity {
+    return new ProductEntity({ ...productDTO, isAvailable: true });
   }
 }

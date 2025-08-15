@@ -3,10 +3,32 @@ import { SuiteEntity } from '../../domain/entities/suite.entity';
 import { SuiteRepositoryPortOut } from '../../ports/out/suite-repository.port';
 import { PrismaService } from '@/modules/shared/infra/prisma/prisma.service';
 import { Where } from '@/modules/shared/types/where.type';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PrismaSuiteRepositoryAdapter implements SuiteRepositoryPortOut {
   constructor(private readonly prisma: PrismaService) {}
+
+  private mapRecordToEntity(
+    record: Prisma.SuiteUncheckedCreateInput & { id: string },
+  ): SuiteEntity {
+    return new SuiteEntity({
+      id: record.id,
+      name: record.name,
+      createdAt:
+        typeof record.createdAt === 'string'
+          ? new Date(record.createdAt)
+          : record.createdAt,
+      updatedAt:
+        typeof record.updatedAt === 'string'
+          ? new Date(record.updatedAt)
+          : record.updatedAt,
+      deletedAt:
+        typeof record.deletedAt === 'string'
+          ? new Date(record.deletedAt)
+          : record.deletedAt,
+    });
+  }
 
   public async upsert(suite: SuiteEntity): Promise<void> {
     await this.prisma.suite.upsert({
@@ -16,23 +38,18 @@ export class PrismaSuiteRepositoryAdapter implements SuiteRepositoryPortOut {
     });
   }
 
-  public async create(suite: SuiteEntity): Promise<void> {
-    await this.prisma.suite.create({
+  public async create(suite: SuiteEntity): Promise<SuiteEntity> {
+    const record = await this.prisma.suite.create({
       data: suite,
     });
+    return this.mapRecordToEntity(record);
   }
 
   public async list(where?: Where<SuiteEntity>): Promise<SuiteEntity[]> {
     const suites = await this.prisma.suite.findMany({
       where: { ...where, deletedAt: null },
     });
-    return suites.map(
-      (suite) =>
-        new SuiteEntity({
-          id: suite.id,
-          name: suite.name,
-        }),
-    );
+    return suites.map((suite) => this.mapRecordToEntity(suite));
   }
 
   public async logicalDelete(id: string): Promise<void> {
@@ -46,11 +63,26 @@ export class PrismaSuiteRepositoryAdapter implements SuiteRepositoryPortOut {
     await this.prisma.suite.delete({ where: { id } });
   }
 
-  public async update(id: string, suite: SuiteEntity): Promise<void> {
-    await this.prisma.suite.update({
-      where: { id },
-      data: suite,
-    });
+  public async update(
+    id: string,
+    suite: SuiteEntity,
+  ): Promise<SuiteEntity | null> {
+    try {
+      const record = await this.prisma.suite.update({
+        where: { id },
+        data: suite,
+      });
+
+      return this.mapRecordToEntity(record);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        return null;
+      }
+      throw error;
+    }
   }
 
   public async findOne(
@@ -62,9 +94,7 @@ export class PrismaSuiteRepositoryAdapter implements SuiteRepositoryPortOut {
     if (!suite) {
       return null;
     }
-    return new SuiteEntity({
-      id: suite.id,
-      name: suite.name,
-    });
+
+    return this.mapRecordToEntity(suite);
   }
 }

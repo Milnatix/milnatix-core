@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import Button from '@/components/atom/Button';
 import Link from 'next/link';
@@ -29,13 +29,16 @@ const FloatingMenu: React.FC<FloatingMenuProps> = ({ items }) => {
   }, []);
 
   return (
-    <div className="absolute bottom-4 right-4 flex flex-col items-end" ref={ref}>
+    <div
+      className="absolute bottom-4 right-4 flex flex-col items-end"
+      ref={ref}
+    >
       <div
         className={
-          "flex flex-col mb-2 space-y-2 transition-all duration-200 " +
+          'flex flex-col mb-2 space-y-2 transition-all duration-200 ' +
           (isOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-4 pointer-events-none")
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-4 pointer-events-none')
         }
       >
         {items.map((item, index) => (

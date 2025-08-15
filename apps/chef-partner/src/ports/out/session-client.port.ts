@@ -1,4 +1,4 @@
-import { AuthSignInResponseDTO } from "@milnatix-core/dtos";
+import { AuthSignInResponseDTO } from '@milnatix-core/dtos';
 
 export interface SessionPortOut {
   getSession(): Promise<AuthSignInResponseDTO>;

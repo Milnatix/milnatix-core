@@ -2,11 +2,11 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserRequestDTO {
   @IsEmail()
-  public email!: string;
+  public readonly email!: string;
 
   @IsNotEmpty()
-  public password!: string;
+  public readonly password!: string;
 
   @IsNotEmpty()
-  public suiteId!: string;
+  public readonly suiteId!: string;
 }

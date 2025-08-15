@@ -5,7 +5,7 @@ interface CreateUserCompanySuiteResponseDTOProps {
 export class CreateUserCompanySuiteResponseDTO
   implements CreateUserCompanySuiteResponseDTOProps
 {
-  public id: string;
+  public readonly id: string;
 
   constructor(props: CreateUserCompanySuiteResponseDTOProps) {
     this.id = props.id;

@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useId } from "react";
+import React, { useState, useEffect, useId } from 'react';
 
-interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextAreaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   error?: string | null;
   helpText?: string | null;
@@ -12,7 +13,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   helpText,
   placeholder,
   id,
-  className = "",
+  className = '',
   ...rest
 }) => {
   const [focused, setFocused] = useState(false);
@@ -28,11 +29,17 @@ const TextArea: React.FC<TextAreaProps> = ({
     <div className={`relative w-full max-w-md ${className}`}>
       <textarea
         id={textareaId}
-        placeholder={placeholder || " "}
+        placeholder={placeholder || ' '}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         aria-invalid={!!error}
-        aria-describedby={error ? `${textareaId}-error` : helpText ? `${textareaId}-help` : undefined}
+        aria-describedby={
+          error
+            ? `${textareaId}-error`
+            : helpText
+              ? `${textareaId}-help`
+              : undefined
+        }
         className={`
           block
           w-full
@@ -54,7 +61,7 @@ const TextArea: React.FC<TextAreaProps> = ({
           transition
           resize-vertical
           peer
-          ${error ? "border-red-500 focus:border-red-600 focus:ring-red-600" : ""}
+          ${error ? 'border-red-500 focus:border-red-600 focus:ring-red-600' : ''}
         `}
         {...rest}
       />
@@ -77,8 +84,8 @@ const TextArea: React.FC<TextAreaProps> = ({
           peer-focus:text-blue-600
           bg-white
           pr-2
-          ${error ? "peer-focus:text-red-600 text-red-500" : ""}
-          ${filled ? "top-2 text-sm text-blue-600" : ""}
+          ${error ? 'peer-focus:text-red-600 text-red-500' : ''}
+          ${filled ? 'top-2 text-sm text-blue-600' : ''}
         `}
       >
         {label}
@@ -86,7 +93,7 @@ const TextArea: React.FC<TextAreaProps> = ({
       {(error || helpText) && (
         <p
           id={error ? `${textareaId}-error` : `${textareaId}-help`}
-          className={`mt-1 text-xs ${error ? "text-red-600" : "text-gray-500"}`}
+          className={`mt-1 text-xs ${error ? 'text-red-600' : 'text-gray-500'}`}
         >
           {error || helpText}
         </p>

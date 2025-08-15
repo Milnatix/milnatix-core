@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId } from "react";
+import React, { useState, useEffect, useId } from 'react';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -6,7 +6,15 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   helpText?: string | null;
 }
 
-const Input: React.FC<InputProps> = ({ label, error, helpText, placeholder, id, className = "", ...rest }) => {
+const Input: React.FC<InputProps> = ({
+  label,
+  error,
+  helpText,
+  placeholder,
+  id,
+  className = '',
+  ...rest
+}) => {
   const [focused, setFocused] = useState(false);
   const [filled, setFilled] = useState(false);
   const inputId = id || useId();
@@ -20,11 +28,13 @@ const Input: React.FC<InputProps> = ({ label, error, helpText, placeholder, id, 
     <div className={`relative w-full max-w-md ${className}`}>
       <input
         id={inputId}
-        placeholder={placeholder || " "}
+        placeholder={placeholder || ' '}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         aria-invalid={!!error}
-        aria-describedby={error ? `${inputId}-error` : helpText ? `${inputId}-help` : undefined}
+        aria-describedby={
+          error ? `${inputId}-error` : helpText ? `${inputId}-help` : undefined
+        }
         className={`
           block
           w-full
@@ -45,7 +55,7 @@ const Input: React.FC<InputProps> = ({ label, error, helpText, placeholder, id, 
           disabled:opacity-50
           transition
           peer
-          ${error ? "border-red-500 focus:border-red-600 focus:ring-red-600" : ""}
+          ${error ? 'border-red-500 focus:border-red-600 focus:ring-red-600' : ''}
         `}
         {...rest}
       />
@@ -66,8 +76,8 @@ const Input: React.FC<InputProps> = ({ label, error, helpText, placeholder, id, 
           peer-focus:top-2
           peer-focus:text-sm
           peer-focus:text-blue-600
-          ${error ? "peer-focus:text-red-600 text-red-500" : ""}
-          ${filled ? "top-2 text-sm text-blue-600" : ""}
+          ${error ? 'peer-focus:text-red-600 text-red-500' : ''}
+          ${filled ? 'top-2 text-sm text-blue-600' : ''}
         `}
       >
         {label}
@@ -75,13 +85,13 @@ const Input: React.FC<InputProps> = ({ label, error, helpText, placeholder, id, 
       {(error || helpText) && (
         <p
           id={error ? `${inputId}-error` : `${inputId}-help`}
-          className={`mt-1 text-xs ${error ? "text-red-600" : "text-gray-500"}`}
+          className={`mt-1 text-xs ${error ? 'text-red-600' : 'text-gray-500'}`}
         >
           {error || helpText}
         </p>
       )}
     </div>
   );
-}
+};
 
-export default Input
+export default Input;

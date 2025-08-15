@@ -4,8 +4,8 @@ type CreateUserResponseDTOProps = {
 };
 
 export class CreateUserResponseDTO implements CreateUserResponseDTOProps {
-  id: string;
-  email: string;
+  public readonly id: string;
+  public readonly email: string;
 
   constructor(props: CreateUserResponseDTOProps) {
     this.id = props.id;

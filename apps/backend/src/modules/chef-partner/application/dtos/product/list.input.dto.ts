@@ -1,6 +1,6 @@
-type ListProductInputDTOProps = {
+interface ListProductInputDTOProps {
   companyId: string;
-};
+}
 
 export class ListProductInputDTO implements ListProductInputDTOProps {
   public companyId: string;

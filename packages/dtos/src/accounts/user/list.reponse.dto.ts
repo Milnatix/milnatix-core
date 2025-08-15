@@ -5,9 +5,9 @@ type ListUsersResponseDTOProps = {
 }
 
 export class ListUsersResponseDTO implements ListUsersResponseDTOProps {
-  public id: string
-  public email: string
-  public suiteIds: string[]
+  public readonly id: string
+  public readonly email: string
+  public readonly suiteIds: string[]
 
   constructor(props: ListUsersResponseDTOProps) {
     this.id = props.id

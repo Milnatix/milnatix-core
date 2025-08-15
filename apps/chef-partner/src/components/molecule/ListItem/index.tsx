@@ -1,5 +1,5 @@
-import Button from "@/components/atom/Button";
-import React from "react";
+import Button from '@/components/atom/Button';
+import React from 'react';
 
 interface ListItemProps {
   title: string;
@@ -9,7 +9,13 @@ interface ListItemProps {
   className?: string;
 }
 
-const ListItem: React.FC<ListItemProps> = ({ title, description, onEdit, onDelete, className = "" }) => {
+const ListItem: React.FC<ListItemProps> = ({
+  title,
+  description,
+  onEdit,
+  onDelete,
+  className = '',
+}) => {
   return (
     <div
       className={`
@@ -24,24 +30,20 @@ const ListItem: React.FC<ListItemProps> = ({ title, description, onEdit, onDelet
     >
       <div className="flex flex-col flex-1">
         <span className="text-gray-900 font-bold">{title}</span>
-        {description && <span className="text-gray-500 text-sm mt-1">{description}</span>}
+        {description && (
+          <span className="text-gray-500 text-sm mt-1">{description}</span>
+        )}
       </div>
 
       {(onEdit || onDelete) && (
         <div className="flex mt-2 sm:mt-0 sm:ml-4 space-x-2">
           {onDelete && (
-            <Button
-              onClick={onDelete}
-              variant="danger"
-            >
+            <Button onClick={onDelete} variant="danger">
               Excluir
             </Button>
           )}
           {onEdit && (
-            <Button
-              onClick={onEdit}
-              variant="secondary"
-            >
+            <Button onClick={onEdit} variant="secondary">
               Editar
             </Button>
           )}

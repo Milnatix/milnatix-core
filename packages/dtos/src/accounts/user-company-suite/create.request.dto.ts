@@ -2,11 +2,11 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateUserCompanySuiteRequestDTO {
   @IsNotEmpty()
-  userId!: string;
+  public readonly userId!: string;
 
   @IsOptional()
-  companyId!: string | null;
+  public readonly companyId!: string | null;
 
   @IsNotEmpty()
-  suiteId!: string;
+  public readonly suiteId!: string;
 }

@@ -1,14 +1,14 @@
 // route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { SessionService } from "@/adapters/cookies/session-service.adapter";
-import { JoseCryptAdapter } from "@/adapters/jose/crypt.adapter";
-import { JWTTokenAdapter } from "@/adapters/jwt/token.adapter";
-import { HttpAuthRepositoryAdapter } from "@/adapters/http/auth-repository.adapter";
+import { NextRequest, NextResponse } from 'next/server';
+import { SessionService } from '@/adapters/cookies/session-service.adapter';
+import { JoseCryptAdapter } from '@/adapters/jose/crypt.adapter';
+import { JWTTokenAdapter } from '@/adapters/jwt/token.adapter';
+import { HttpAuthRepositoryAdapter } from '@/adapters/http/auth-repository.adapter';
 
 const sessionService = new SessionService(
   new JoseCryptAdapter(),
   new JWTTokenAdapter(),
-  new HttpAuthRepositoryAdapter()
+  new HttpAuthRepositoryAdapter(),
 );
 
 export async function GET(req: NextRequest) {

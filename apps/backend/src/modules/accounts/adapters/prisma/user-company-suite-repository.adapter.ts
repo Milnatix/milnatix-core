@@ -3,6 +3,7 @@ import { UserCompanySuiteEntity } from '../../domain/entities/user-company-suite
 import { UserCompanySuiteRepositoryPortOut } from '../../ports/out/user-company-suite-repository.port';
 import { PrismaService } from '@/modules/shared/infra/prisma/prisma.service';
 import { Where } from '@/modules/shared/types/where.type';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PrismaUserCompanySuiteRepositoryAdapter
@@ -10,10 +11,36 @@ export class PrismaUserCompanySuiteRepositoryAdapter
 {
   constructor(private readonly prisma: PrismaService) {}
 
-  public async create(userCompanySuite: UserCompanySuiteEntity): Promise<void> {
-    await this.prisma.userCompanySuite.create({
+  private mapRecordToEntity(
+    record: Prisma.UserCompanySuiteUncheckedCreateInput & { id: string },
+  ): UserCompanySuiteEntity {
+    return new UserCompanySuiteEntity({
+      id: record.id,
+      userId: record.userId,
+      companyId: record.companyId || null,
+      suiteId: record.suiteId,
+      createdAt:
+        typeof record.createdAt === 'string'
+          ? new Date(record.createdAt)
+          : record.createdAt,
+      updatedAt:
+        typeof record.updatedAt === 'string'
+          ? new Date(record.updatedAt)
+          : record.updatedAt,
+      deletedAt:
+        typeof record.deletedAt === 'string'
+          ? new Date(record.deletedAt)
+          : record.deletedAt,
+    });
+  }
+
+  public async create(
+    userCompanySuite: UserCompanySuiteEntity,
+  ): Promise<UserCompanySuiteEntity> {
+    const record = await this.prisma.userCompanySuite.create({
       data: userCompanySuite,
     });
+    return this.mapRecordToEntity(record);
   }
 
   public async list(
@@ -22,13 +49,8 @@ export class PrismaUserCompanySuiteRepositoryAdapter
     const userCompanySuites = await this.prisma.userCompanySuite.findMany({
       where: { ...where, deletedAt: null },
     });
-    return userCompanySuites.map(
-      (userCompanySuite) =>
-        new UserCompanySuiteEntity({
-          userId: userCompanySuite.userId,
-          companyId: userCompanySuite.companyId,
-          suiteId: userCompanySuite.suiteId,
-        }),
+    return userCompanySuites.map((userCompanySuite) =>
+      this.mapRecordToEntity(userCompanySuite),
     );
   }
 
@@ -46,11 +68,22 @@ export class PrismaUserCompanySuiteRepositoryAdapter
   public async update(
     id: string,
     userCompanySuite: UserCompanySuiteEntity,
-  ): Promise<void> {
-    await this.prisma.userCompanySuite.update({
-      where: { id },
-      data: userCompanySuite,
-    });
+  ): Promise<UserCompanySuiteEntity | null> {
+    try {
+      const record = await this.prisma.userCompanySuite.update({
+        where: { id },
+        data: userCompanySuite,
+      });
+      return this.mapRecordToEntity(record);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        return null;
+      }
+      throw error;
+    }
   }
 
   public async findOne(
@@ -62,11 +95,6 @@ export class PrismaUserCompanySuiteRepositoryAdapter
     if (!userCompanySuite) {
       return null;
     }
-    return new UserCompanySuiteEntity({
-      id: userCompanySuite.id,
-      userId: userCompanySuite.userId,
-      companyId: userCompanySuite.companyId,
-      suiteId: userCompanySuite.suiteId,
-    });
+    return this.mapRecordToEntity(userCompanySuite);
   }
 }

@@ -1,3 +1,3 @@
 export interface TokenPortOut {
-  isExpired(token: string): boolean
+  isExpired(token: string): boolean;
 }

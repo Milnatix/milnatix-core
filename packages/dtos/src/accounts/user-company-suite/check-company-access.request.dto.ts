@@ -10,11 +10,11 @@ export class CheckCompanyAccessRequestDTO
   implements CheckCompanyAccessRequestDTOProps
 {
   @IsNotEmpty()
-  public userId!: string;
+  public readonly userId!: string;
 
   @IsNotEmpty()
-  public companyId!: string;
+  public readonly companyId!: string;
 
   @IsNotEmpty()
-  public suiteId!: string;
+  public readonly suiteId!: string;
 }

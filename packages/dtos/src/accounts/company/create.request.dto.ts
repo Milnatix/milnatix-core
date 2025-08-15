@@ -2,11 +2,11 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateCompanyRequestDTO {
   @IsNotEmpty()
-  corporateName!: string;
+  public readonly corporateName!: string;
 
   @IsNotEmpty()
-  tradingName!: string;
+  public readonly tradingName!: string;
 
   @IsOptional()
-  federalDocument!: string | null;
+  public readonly federalDocument!: string | null;
 }

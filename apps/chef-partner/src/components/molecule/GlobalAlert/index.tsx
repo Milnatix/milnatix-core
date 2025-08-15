@@ -1,28 +1,38 @@
-"use client";
+'use client';
 
-import { useAlertStore } from "@/shared/stores/alert.store";
-import React, { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { FiAlertCircle, FiAlertTriangle, FiCheckCircle, FiInfo, FiX } from "react-icons/fi";
+import { useAlertStore } from '@/shared/stores/alert.store';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import {
+  FiAlertCircle,
+  FiAlertTriangle,
+  FiCheckCircle,
+  FiInfo,
+  FiX,
+} from 'react-icons/fi';
 
-function TypeIcon({ type }: { type: "error" | "success" | "warning" | "info" }) {
-  if (type === "error") return <FiAlertCircle className="shrink-0" />;
-  if (type === "success") return <FiCheckCircle className="shrink-0" />;
-  if (type === "warning") return <FiAlertTriangle className="shrink-0" />;
+function TypeIcon({
+  type,
+}: {
+  type: 'error' | 'success' | 'warning' | 'info';
+}) {
+  if (type === 'error') return <FiAlertCircle className="shrink-0" />;
+  if (type === 'success') return <FiCheckCircle className="shrink-0" />;
+  if (type === 'warning') return <FiAlertTriangle className="shrink-0" />;
   return <FiInfo className="shrink-0" />;
 }
 
 function typeClasses(type: string) {
   // usa suas cores do tema (substitua se quiser)
   switch (type) {
-    case "error":
-      return "bg-[oklch(97%_0.05_30)] text-[oklch(40%_0.16_30)] border-[oklch(80%_0.12_30)]";
-    case "success":
-      return "bg-[oklch(97%_0.05_160)] text-[oklch(35%_0.12_160)] border-[oklch(80%_0.10_160)]";
-    case "warning":
-      return "bg-[oklch(97%_0.07_80)] text-[oklch(35%_0.13_80)] border-[oklch(80%_0.12_80)]";
+    case 'error':
+      return 'bg-[oklch(97%_0.05_30)] text-[oklch(40%_0.16_30)] border-[oklch(80%_0.12_30)]';
+    case 'success':
+      return 'bg-[oklch(97%_0.05_160)] text-[oklch(35%_0.12_160)] border-[oklch(80%_0.10_160)]';
+    case 'warning':
+      return 'bg-[oklch(97%_0.07_80)] text-[oklch(35%_0.13_80)] border-[oklch(80%_0.12_80)]';
     default:
-      return "bg-white text-gray-800 border-gray-200";
+      return 'bg-white text-gray-800 border-gray-200';
   }
 }
 
@@ -67,6 +77,6 @@ export default function GlobalAlert() {
         ))}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

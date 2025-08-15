@@ -6,7 +6,7 @@ import {
 } from '@/modules/chef-partner/ports/out/product-repository.port';
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { CreateProductInputDTO } from '../../dtos/product/create.input.dto';
-import { CreateProductResponseDTO } from '@milnatix-core/dtos';
+import { FormProductResponseDTO } from '@milnatix-core/dtos';
 
 @Injectable()
 export class CreateProductUseCase implements CreateProductPortIn {
@@ -17,7 +17,7 @@ export class CreateProductUseCase implements CreateProductPortIn {
 
   public async execute(
     productDTO: CreateProductInputDTO,
-  ): Promise<CreateProductResponseDTO> {
+  ): Promise<FormProductResponseDTO> {
     const product = ProductMapper.createInputDTOToEntity(productDTO);
     const productWithSameName = await this.productRepository.findOne({
       name: product.name,
@@ -29,6 +29,6 @@ export class CreateProductUseCase implements CreateProductPortIn {
     }
 
     await this.productRepository.create(product);
-    return ProductMapper.entityToCreateResponseDTO(product);
+    return ProductMapper.entityToFormResponseDTO(product);
   }
 }

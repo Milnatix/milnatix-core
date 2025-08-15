@@ -1,4 +1,4 @@
 export interface AuthenticatedRequestParams {
-  accessToken: string
-  companyId: string
+  accessToken: string;
+  companyId: string;
 }

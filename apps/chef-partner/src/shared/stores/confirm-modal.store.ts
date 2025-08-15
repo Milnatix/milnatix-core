@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ButtonVariants } from "@/components/atom/Button";
-import { create } from "zustand";
+import { ButtonVariants } from '@/components/atom/Button';
+import { create } from 'zustand';
 
 export type ConfirmModalInput = {
   title?: string;
@@ -9,8 +9,8 @@ export type ConfirmModalInput = {
   onConfirm: () => Promise<void>;
   confirmText?: string;
   cancelText?: string;
-  confirmButtonVariant?: ButtonVariants
-  cancelButtonVariant?: ButtonVariants
+  confirmButtonVariant?: ButtonVariants;
+  cancelButtonVariant?: ButtonVariants;
 };
 
 export type ConfirmModalState = {

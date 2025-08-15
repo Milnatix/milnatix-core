@@ -4,5 +4,8 @@ export type Result<T, E> =
 
 export const Result = {
   ok: <T, E = never>(value: T): Result<T, E> => ({ success: true, value }),
-  err: <T = never, E = Error>(error: E): Result<T, E> => ({ success: false, error }),
+  err: <T = never, E = Error>(error: E): Result<T, E> => ({
+    success: false,
+    error,
+  }),
 };

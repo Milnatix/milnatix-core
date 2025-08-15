@@ -1,6 +1,7 @@
-import React from "react";
+import React from 'react';
+import Spinner from '../Spinner';
 
-export type ButtonVariants =  "primary" | "secondary" | "danger" | "default";
+export type ButtonVariants = 'primary' | 'secondary' | 'danger' | 'default';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariants;
@@ -9,11 +10,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button: React.FC<ButtonProps> = ({
-  variant = "default",
+  variant = 'default',
   loading = false,
   children,
   disabled,
-  className = "",
+  className = '',
   ...rest
 }) => {
   const baseClasses = `
@@ -82,31 +83,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button disabled={disabled || loading} className={classes} {...rest}>
-      {loading ? (
-        <svg
-          className="animate-spin h-5 w-5 text-current"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          aria-label="Loading"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-          />
-        </svg>
-      ) : (
-        children
-      )}
+      {loading ? <Spinner /> : children}
     </button>
   );
 };

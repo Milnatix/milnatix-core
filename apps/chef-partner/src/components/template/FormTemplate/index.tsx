@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect } from 'react';
 import Card from '@/components/atom/Card';
 import Header from '@/components/atom/Header';
 import Button from '@/components/atom/Button';
+import Spinner from '@/components/atom/Spinner';
 
 interface FormTemplateProps {
   title: string;
@@ -9,6 +10,7 @@ interface FormTemplateProps {
   onSubmit: () => void | Promise<void>;
   isSubmitting?: boolean;
   children: ReactNode;
+  loading?: boolean;
 }
 
 const FormTemplate: React.FC<FormTemplateProps> = ({
@@ -17,6 +19,7 @@ const FormTemplate: React.FC<FormTemplateProps> = ({
   onSubmit,
   isSubmitting = false,
   children,
+  loading = false,
 }) => {
   useEffect(() => {
     if (!isSubmitting) return;
@@ -40,22 +43,39 @@ const FormTemplate: React.FC<FormTemplateProps> = ({
       <div className="flex flex-1 justify-center items-center px-2 py-4">
         <Card className="h-full max-w-md w-full">
           <form
-            onSubmit={e => {
+            onSubmit={(e) => {
               e.preventDefault();
               onSubmit();
             }}
             className="flex flex-col h-full"
           >
-            <div className="flex flex-col flex-1 gap-2">{children}</div>
-
-            <div className="flex justify-end gap-2 mt-4">
-              <Button type="button" disabled={isSubmitting} className="flex-1" onClick={onCancel}>
-                Cancelar
-              </Button>
-              <Button type="submit" variant="primary" loading={isSubmitting} className="flex-1">
-                Salvar
-              </Button>
-            </div>
+            {loading ? (
+              <div className="flex justify-center items-center flex-1">
+                <Spinner />
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-col flex-1 gap-2">{children}</div>
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button
+                    type="button"
+                    disabled={isSubmitting}
+                    className="flex-1"
+                    onClick={onCancel}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    loading={isSubmitting}
+                    className="flex-1"
+                  >
+                    Salvar
+                  </Button>
+                </div>
+              </>
+            )}
           </form>
         </Card>
       </div>

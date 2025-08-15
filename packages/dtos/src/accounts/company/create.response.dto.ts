@@ -6,9 +6,9 @@ type CreateCompanyResponseDTOProps = {
 }
 
 export class CreateCompanyResponseDTO implements CreateCompanyResponseDTOProps {
-  public id: string;
-  public corporateName: string;
-  public tradingName: string;
+  public readonly id: string;
+  public readonly corporateName: string;
+  public readonly tradingName: string;
 
   constructor(props: CreateCompanyResponseDTOProps) {
     this.id = props.id;

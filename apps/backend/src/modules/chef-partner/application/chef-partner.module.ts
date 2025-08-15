@@ -10,6 +10,10 @@ import { LIST_PRODUCT_PORT_IN_TOKEN } from '../ports/in/product/list.port';
 import { ListProductUseCase } from './usecases/product/list.usecase';
 import { DELETE_PRODUCT_PORT_IN_TOKEN } from '../ports/in/product/delete.port';
 import { DeleteProductUseCase } from './usecases/product/delete.usecase';
+import { GetProductDetailsUseCase } from './usecases/product/get-details.usecase';
+import { GET_PRODUCT_DETAILS_PORT_IN_TOKEN } from '../ports/in/product/get-details.port';
+import { UPDATE_PRODUCT_PORT_IN_TOKEN } from '../ports/in/product/update.port';
+import { UpdateProductUseCase } from './usecases/product/update.usecase';
 
 const useCases: Provider[] = [
   {
@@ -23,6 +27,14 @@ const useCases: Provider[] = [
   {
     provide: DELETE_PRODUCT_PORT_IN_TOKEN,
     useClass: DeleteProductUseCase,
+  },
+  {
+    provide: GET_PRODUCT_DETAILS_PORT_IN_TOKEN,
+    useClass: GetProductDetailsUseCase,
+  },
+  {
+    provide: UPDATE_PRODUCT_PORT_IN_TOKEN,
+    useClass: UpdateProductUseCase,
   },
 ];
 
