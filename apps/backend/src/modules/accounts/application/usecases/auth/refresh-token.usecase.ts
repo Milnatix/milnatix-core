@@ -7,12 +7,10 @@ import {
   USER_REPOSITORY_PORT_TOKEN,
   UserRepositoryPortOut,
 } from '@/modules/accounts/ports/out/user-repository.port';
-import {
-  AuthRefreshTokenRequestDTO,
-  AuthRefreshTokenResponseDTO,
-} from '@milnatix-core/dtos';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthMapper } from '../../mappers/auth.mapper';
+import { AuthRefreshInputRequestDTO } from '../../dtos/auth/auth-refresh-input.request.dto';
+import { AuthRefreshInputResponseDTO } from '../../dtos/auth/auth-refresh-input.response.dto';
 
 @Injectable()
 export class RefreshTokenUseCase implements RefreshTokenPortIn {
@@ -24,8 +22,8 @@ export class RefreshTokenUseCase implements RefreshTokenPortIn {
   ) {}
 
   public async execute(
-    refreshTokenDTO: AuthRefreshTokenRequestDTO,
-  ): Promise<AuthRefreshTokenResponseDTO> {
+    refreshTokenDTO: AuthRefreshInputRequestDTO,
+  ): Promise<AuthRefreshInputResponseDTO> {
     let payload;
     try {
       payload = this.tokenAdapter.verifyRefreshToken(
@@ -54,7 +52,7 @@ export class RefreshTokenUseCase implements RefreshTokenPortIn {
       suiteId: payload.suiteId,
     });
 
-    return AuthMapper.toRefreshTokenResponseDTO(
+    return AuthMapper.toRefreshTokenInputResponseDTO(
       newAccessToken,
       newRefreshToken,
     );

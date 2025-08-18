@@ -13,7 +13,6 @@ import Input from '@/components/atom/Input';
 import Button from '@/components/atom/Button';
 import Card from '@/components/atom/Card';
 import { useAlertStore } from '@/shared/stores/alert.store';
-import { setSession } from '@/application/session/facades/session.facade';
 
 export const LoginPage: React.FC = () => {
   const router = useRouter();
@@ -44,7 +43,6 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
-    await setSession(response.value);
     goToHome();
   };
 

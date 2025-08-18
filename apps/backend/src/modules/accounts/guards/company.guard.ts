@@ -12,6 +12,8 @@ import {
   CheckCompanyAccessPortIn,
 } from '../ports/in/user-company-suite/check-company-access.port';
 import { SuiteId } from '../domain/entities/suite.entity';
+import { getCookieValue } from '@/modules/shared/utils/cookie.util';
+import { COOKIE_NAME } from '@/modules/shared/constants/cookie.constants';
 
 @Injectable()
 export class CompanyGuard implements CanActivate {
@@ -29,17 +31,17 @@ export class CompanyGuard implements CanActivate {
       throw new UnauthorizedException('User is not authenticated');
     }
 
-    const companyId = request.headers['x-company-id'];
+    const companyId = getCookieValue(request, COOKIE_NAME.SELECTED_COMPANY_ID);
 
-    if (!companyId || typeof companyId !== 'string') {
-      throw new BadRequestException('x-company-id header is required');
+    if (!companyId) {
+      throw new BadRequestException('Selected company is required');
     }
 
     if (suiteId !== SuiteId.ADMIN) {
       const hasAccess = await this.checkCompanyAccessUseCase.execute({
-        userId: userId,
-        suiteId: suiteId,
-        companyId: companyId,
+        userId,
+        suiteId,
+        companyId,
       });
       if (!hasAccess) {
         throw new UnauthorizedException(

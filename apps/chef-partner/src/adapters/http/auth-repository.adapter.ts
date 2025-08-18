@@ -1,7 +1,6 @@
 import { AuthRepositoryPortOut } from '@/ports/out/auth-repository.port';
 import { Result } from '@/shared/types/Result.type';
 import {
-  AuthRefreshTokenRequestDTO,
   AuthSignInRequestDTO,
   AuthSignInResponseDTO,
 } from '@milnatix-core/dtos';
@@ -29,21 +28,4 @@ export class HttpAuthRepositoryAdapter implements AuthRepositoryPortOut {
     }
   }
 
-  public async refresh(
-    data: AuthRefreshTokenRequestDTO,
-  ): Promise<Result<AuthSignInResponseDTO, Error>> {
-    try {
-      const response = await apiClient.request<AuthSignInResponseDTO>({
-        method: 'POST',
-        url: `${this.basePath}/refresh`,
-        body: data,
-      });
-      return Result.ok(response.data);
-    } catch (error) {
-      if (error instanceof ApiException) {
-        return Result.err(new Error(error.message));
-      }
-      throw error;
-    }
-  }
 }

@@ -27,15 +27,13 @@ import {
 } from '@/modules/shared/ports/out/hash.port';
 import { AuthMapper } from '@/modules/accounts/application/mappers/auth.mapper';
 import { SuiteId } from '@/modules/accounts/domain/entities/suite.entity';
-import {
-  AuthSignInRequestDTO,
-  AuthSignInResponseDTO,
-} from '@milnatix-core/dtos';
+import { AuthSignInRequestDTO } from '@milnatix-core/dtos';
 import { CompanyEntity } from '@/modules/accounts/domain/entities/company.entity';
 import {
   COMPANY_REPOSITORY_PORT_TOKEN,
   CompanyRepositoryPortOut,
 } from '@/modules/accounts/ports/out/company-repository.port';
+import { AuthSignInInputResponseDTO } from '../../dtos/auth/auth-sign-in-input.response.dto';
 
 @Injectable()
 export class SignInUseCase implements SignInPortIn {
@@ -56,7 +54,7 @@ export class SignInUseCase implements SignInPortIn {
 
   public async execute(
     signInDTO: AuthSignInRequestDTO,
-  ): Promise<AuthSignInResponseDTO> {
+  ): Promise<AuthSignInInputResponseDTO> {
     const [user, suite] = await Promise.all([
       this.userRepository.findOne({
         email: signInDTO.email,
@@ -113,7 +111,7 @@ export class SignInUseCase implements SignInPortIn {
       suiteId: suite.id as SuiteId,
     });
 
-    return AuthMapper.toSignInResponseDTO(
+    return AuthMapper.toSignInInputResponseDTO(
       accessToken,
       refreshToken,
       user,

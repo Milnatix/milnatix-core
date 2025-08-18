@@ -1,18 +1,16 @@
-import {
-  AuthRefreshTokenResponseDTO,
-  AuthSignInResponseDTO,
-} from '@milnatix-core/dtos';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { CompanyEntity } from '../../domain/entities/company.entity';
+import { AuthSignInInputResponseDTO } from '../dtos/auth/auth-sign-in-input.response.dto';
+import { AuthRefreshInputResponseDTO } from '../dtos/auth/auth-refresh-input.response.dto';
 
 export class AuthMapper {
-  public static toSignInResponseDTO(
+  public static toSignInInputResponseDTO(
     accessToken: string,
     refreshToken: string,
     user: UserEntity,
     companies: CompanyEntity[],
-  ): AuthSignInResponseDTO {
-    return new AuthSignInResponseDTO({
+  ): AuthSignInInputResponseDTO {
+    return new AuthSignInInputResponseDTO({
       accessToken,
       refreshToken,
       user: {
@@ -25,11 +23,11 @@ export class AuthMapper {
     });
   }
 
-  public static toRefreshTokenResponseDTO(
+  public static toRefreshTokenInputResponseDTO(
     accessToken: string,
     refreshToken: string,
-  ): AuthRefreshTokenResponseDTO {
-    return new AuthRefreshTokenResponseDTO({
+  ): AuthRefreshInputResponseDTO {
+    return new AuthRefreshInputResponseDTO({
       accessToken,
       refreshToken,
     });

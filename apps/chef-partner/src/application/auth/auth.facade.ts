@@ -1,5 +1,3 @@
-'use server';
-
 import { HttpAuthRepositoryAdapter } from '@/adapters/http/auth-repository.adapter';
 import { SignInUseCase } from '@/domain/usecases/auth/sign-in.usecase';
 import { SignInPortIn } from '@/ports/in/auth/sign-in.port';

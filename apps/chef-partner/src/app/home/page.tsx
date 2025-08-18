@@ -1,13 +1,13 @@
 'use client';
 
-import FloatingMenu from '@/components/molecule/FloatingMenu';
 import React from 'react';
+import MainNavigationTemplate from '@/components/template/MainNavigationTemplate';
 
 const HomePage: React.FC = () => {
   return (
-    <div className="bg-gradient-app h-screen w-screen overflow-hidden">
-      <FloatingMenu items={[{ label: 'Produtos', path: '/products' }]} />
-    </div>
+    <MainNavigationTemplate title='Início' >
+      <div>Hello World!</div>
+    </MainNavigationTemplate>
   );
 };
 

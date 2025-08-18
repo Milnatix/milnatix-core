@@ -1,4 +1,3 @@
-'use server';
 
 import { HttpProductRepositoryAdapter } from '@/adapters/http/product-repository.adapter';
 import { ListProductsUseCase } from '@/domain/usecases/product/list.usecase';
@@ -11,12 +10,10 @@ import {
 import { CreateProductUseCase } from '@/domain/usecases/product/create.usecase';
 import { ProductFormData } from '../schemas/form.schema';
 import { DeleteProductUseCase } from '@/domain/usecases/product/delete.usecase';
-import { UniversalSessionAdapter } from '@/adapters/cookies/session-client.adapter';
 import { GetProductDetailsUseCase } from '@/domain/usecases/product/get-details.usecase';
 import { UpdateProductUseCase } from '@/domain/usecases/product/update.usecase';
 
-const sessionAdapter = new UniversalSessionAdapter();
-const productRepository = new HttpProductRepositoryAdapter(sessionAdapter);
+const productRepository = new HttpProductRepositoryAdapter();
 
 export async function list(): Promise<Result<ListProductResponseDTO[], Error>> {
   const listProductsUseCase = new ListProductsUseCase(productRepository);

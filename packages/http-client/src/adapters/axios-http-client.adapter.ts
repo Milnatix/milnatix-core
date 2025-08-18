@@ -7,7 +7,7 @@ export class AxiosHttpClient implements HttpClientPort {
   private axiosInstance: AxiosInstance;
 
   constructor(baseURL: string) {
-    this.axiosInstance = axios.create({ baseURL });
+    this.axiosInstance = axios.create({ baseURL, withCredentials: true });
   }
 
   public async request<T>(req: HttpRequest): Promise<HttpResponse<T>> {

@@ -1,35 +1,24 @@
 import { ProductsRepositoryPortOut } from '@/ports/out/product-repository.port';
-import { SessionPortOut } from '@/ports/out/session-client.port';
 import { Result } from '@/shared/types/Result.type';
 import {
-  CreateProductRequestDTO,
-  CreateProductResponseDTO,
+  FormProductRequestDTO,
+  FormProductResponseDTO,
   ListProductResponseDTO,
   ProductDetailsResponseDTO,
 } from '@milnatix-core/dtos';
 import { apiClient, ApiException } from '@milnatix-core/http-client';
 import {
   HttpRequest,
-  HttpResponse,
 } from '@milnatix-core/http-client/dist/ports/http-client.port';
 
 export class HttpProductRepositoryAdapter implements ProductsRepositoryPortOut {
   private readonly baseUrl = '/chef-partner/product';
 
-  constructor(private readonly sessionService: SessionPortOut) {}
-
   private async request<T>(
-    config: Omit<HttpRequest, 'headers'>,
+    config: HttpRequest,
   ): Promise<Result<T, Error>> {
     try {
-      const session = await this.sessionService.getSession();
-      const response = await apiClient.request<T>({
-        ...config,
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`,
-          'x-company-id': session.companies[0].id,
-        },
-      });
+      const response = await apiClient.request<T>(config);
       return Result.ok(response.data);
     } catch (error) {
       if (error instanceof ApiException) {
@@ -56,9 +45,9 @@ export class HttpProductRepositoryAdapter implements ProductsRepositoryPortOut {
   }
 
   public create(
-    requestData: CreateProductRequestDTO,
-  ): Promise<Result<CreateProductResponseDTO, Error>> {
-    return this.request<CreateProductResponseDTO>({
+    requestData: FormProductRequestDTO,
+  ): Promise<Result<FormProductResponseDTO, Error>> {
+    return this.request<FormProductResponseDTO>({
       method: 'POST',
       url: this.baseUrl,
       body: requestData,
@@ -67,9 +56,9 @@ export class HttpProductRepositoryAdapter implements ProductsRepositoryPortOut {
 
   public update(
     productId: string,
-    requestData: CreateProductRequestDTO,
-  ): Promise<Result<CreateProductResponseDTO, Error>> {
-    return this.request<CreateProductResponseDTO>({
+    requestData: FormProductRequestDTO,
+  ): Promise<Result<FormProductResponseDTO, Error>> {
+    return this.request<FormProductResponseDTO>({
       method: 'PUT',
       url: `${this.baseUrl}/${productId}`,
       body: requestData,

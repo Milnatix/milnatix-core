@@ -8,7 +8,8 @@ export class UpdateProductUseCase implements UpdateProductPortIn {
   constructor(private readonly productRepository: ProductsRepositoryPortOut) {}
 
   public async execute(input: UpdateProductInputDTO): Promise<Result<FormProductResponseDTO, Error>> {
-    return await this.productRepository.update(input.id, input);
+    const {id, ...data} = input;
+    return await this.productRepository.update(id, data);
   }
 
 }

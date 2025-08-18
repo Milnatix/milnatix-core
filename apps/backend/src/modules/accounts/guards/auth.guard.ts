@@ -8,6 +8,8 @@ import {
 import { TOKEN_PORT_TOKEN, TokenPortOut } from '../ports/out/token.port';
 import { Observable } from 'rxjs';
 import { AuthenticatedRequest } from '../types/authenticated-request .type';
+import { getCookieValue } from '@/modules/shared/utils/cookie.util';
+import { COOKIE_NAME } from '@/modules/shared/constants/cookie.constants';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -21,16 +23,10 @@ export class AuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
-    const authHeader = request.headers['authorization'];
-    if (!authHeader) {
-      throw new UnauthorizedException('Authorization header missing');
+    const token = getCookieValue(request, COOKIE_NAME.ACCESS_TOKEN);
+    if (!token) {
+      throw new UnauthorizedException('Access token missing');
     }
-
-    if (!authHeader?.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Access token is missing');
-    }
-
-    const token = authHeader.split(' ')[1];
 
     try {
       const payload = this.tokenAdapter.verifyAccessToken(token);
