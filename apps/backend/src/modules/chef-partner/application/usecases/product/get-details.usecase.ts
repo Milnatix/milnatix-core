@@ -1,12 +1,12 @@
 import { GetProductDetailsPortIn } from '@/modules/chef-partner/ports/in/product/get-details.port';
 import { ProductDetailsResponseDTO } from '@milnatix-core/dtos';
-import { GetProductDetailsInputDTO } from '../../dtos/product/get-details.input.dto';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   PRODUCT_REPOSITORY_PORT_TOKEN,
   ProductRepositoryPortOut,
 } from '@/modules/chef-partner/ports/out/product-repository.port';
 import { ProductMapper } from '../../mappers/product.mapper';
+import { DetailContext } from '@/modules/shared/types/detail-context.type';
 
 @Injectable()
 export class GetProductDetailsUseCase implements GetProductDetailsPortIn {
@@ -16,10 +16,10 @@ export class GetProductDetailsUseCase implements GetProductDetailsPortIn {
   ) {}
 
   public async execute(
-    input: GetProductDetailsInputDTO,
+    input: DetailContext,
   ): Promise<ProductDetailsResponseDTO> {
     const product = await this.productRepository.findOne({
-      id: input.productId,
+      id: input.id,
       companyId: input.companyId,
     });
 

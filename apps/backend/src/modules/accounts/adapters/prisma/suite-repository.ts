@@ -52,37 +52,34 @@ export class PrismaSuiteRepositoryAdapter implements SuiteRepositoryPortOut {
     return suites.map((suite) => this.mapRecordToEntity(suite));
   }
 
-  public async logicalDelete(id: string): Promise<void> {
-    await this.prisma.suite.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
+  public async logicalDelete(id: string): Promise<SuiteEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.suite.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      }),
+    );
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 
-  public async trueDelete(id: string): Promise<void> {
-    await this.prisma.suite.delete({ where: { id } });
+  public async trueDelete(id: string): Promise<SuiteEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.suite.delete({ where: { id } }),
+    );
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 
   public async update(
     id: string,
-    suite: SuiteEntity,
+    entity: SuiteEntity,
   ): Promise<SuiteEntity | null> {
-    try {
-      const record = await this.prisma.suite.update({
+    const record = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.suite.update({
         where: { id },
-        data: suite,
-      });
-
-      return this.mapRecordToEntity(record);
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        return null;
-      }
-      throw error;
-    }
+        data: entity,
+      }),
+    );
+    return record ? this.mapRecordToEntity(record) : null;
   }
 
   public async findOne(

@@ -1,12 +1,12 @@
 import { ListProductPortIn } from '@/modules/chef-partner/ports/in/product/list.port';
 import { Inject, Injectable } from '@nestjs/common';
-import { ListProductInputDTO } from '../../dtos/product/list.input.dto';
 import {
   PRODUCT_REPOSITORY_PORT_TOKEN,
   ProductRepositoryPortOut,
 } from '@/modules/chef-partner/ports/out/product-repository.port';
 import { ProductMapper } from '../../mappers/product.mapper';
 import { ListProductResponseDTO } from '@milnatix-core/dtos';
+import { CompanyIdContext } from '@/modules/shared/types/company-id-context.type';
 
 @Injectable()
 export class ListProductUseCase implements ListProductPortIn {
@@ -16,7 +16,7 @@ export class ListProductUseCase implements ListProductPortIn {
   ) {}
 
   public async execute(
-    input: ListProductInputDTO,
+    input: CompanyIdContext<void>,
   ): Promise<ListProductResponseDTO[]> {
     const products = await this.productRepository.list({
       companyId: input.companyId,

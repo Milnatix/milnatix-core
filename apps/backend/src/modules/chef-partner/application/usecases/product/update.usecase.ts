@@ -1,12 +1,15 @@
 import { UpdateProductPortIn } from '@/modules/chef-partner/ports/in/product/update.port';
-import { FormProductResponseDTO } from '@milnatix-core/dtos';
-import { UpdateProductInputDTO } from '../../dtos/product/update.input.dto';
+import {
+  FormProductResponseDTO,
+  UpdateProductRequestDTO,
+} from '@milnatix-core/dtos';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   PRODUCT_REPOSITORY_PORT_TOKEN,
   ProductRepositoryPortOut,
 } from '@/modules/chef-partner/ports/out/product-repository.port';
 import { ProductMapper } from '../../mappers/product.mapper';
+import { DetailContext } from '@/modules/shared/types/detail-context.type';
 
 @Injectable()
 export class UpdateProductUseCase implements UpdateProductPortIn {
@@ -16,18 +19,16 @@ export class UpdateProductUseCase implements UpdateProductPortIn {
   ) {}
 
   public async execute(
-    productReq: UpdateProductInputDTO,
+    dto: DetailContext<UpdateProductRequestDTO>,
   ): Promise<FormProductResponseDTO> {
-    const product = ProductMapper.updateProductInputDTOToEntity(productReq);
-    const productUpdated = await this.productRepository.update(
-      product.id,
-      product,
-    );
+    const productUpdated = await this.productRepository.update(dto.id, {
+      ...dto.payload,
+    });
 
     if (!productUpdated) {
       throw new NotFoundException('Produto nao encontrado');
     }
 
-    return ProductMapper.entityToFormResponseDTO(product);
+    return ProductMapper.entityToFormResponseDTO(productUpdated);
   }
 }

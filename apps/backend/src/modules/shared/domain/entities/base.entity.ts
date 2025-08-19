@@ -1,9 +1,9 @@
-export type BaseEntityProps = {
+export interface BaseEntityProps {
   id?: string;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
-};
+}
 
 export abstract class BaseEntity implements BaseEntityProps {
   public id: string;

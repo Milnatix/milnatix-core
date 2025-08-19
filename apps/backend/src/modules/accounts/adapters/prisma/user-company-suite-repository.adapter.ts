@@ -54,36 +54,36 @@ export class PrismaUserCompanySuiteRepositoryAdapter
     );
   }
 
-  public async logicalDelete(id: string): Promise<void> {
-    await this.prisma.userCompanySuite.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
+  public async logicalDelete(
+    id: string,
+  ): Promise<UserCompanySuiteEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.userCompanySuite.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      }),
+    );
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 
-  public async trueDelete(id: string): Promise<void> {
-    await this.prisma.userCompanySuite.delete({ where: { id } });
+  public async trueDelete(id: string): Promise<UserCompanySuiteEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.userCompanySuite.delete({ where: { id } }),
+    );
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 
   public async update(
     id: string,
-    userCompanySuite: UserCompanySuiteEntity,
+    entity: UserCompanySuiteEntity,
   ): Promise<UserCompanySuiteEntity | null> {
-    try {
-      const record = await this.prisma.userCompanySuite.update({
+    const record = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.userCompanySuite.update({
         where: { id },
-        data: userCompanySuite,
-      });
-      return this.mapRecordToEntity(record);
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        return null;
-      }
-      throw error;
-    }
+        data: entity,
+      }),
+    );
+    return record ? this.mapRecordToEntity(record) : null;
   }
 
   public async findOne(

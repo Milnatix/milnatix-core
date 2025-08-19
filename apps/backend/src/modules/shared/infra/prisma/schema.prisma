@@ -7,44 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum AuditAction {
-  CREATE
-  UPDATE
-  DELETE
+enum ChefPartnerOrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  DELIVERED
+  CANCELLED
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
+  id          String             @id @default(uuid())
+  email       String             @unique
+  password    String
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  deletedAt   DateTime?
   memberships UserCompanySuite[]
-  auditLogs   AuditLog[]         @relation("PerformedAudits")
 }
 
 model Company {
   id              String    @id @default(uuid())
   corporateName   String
   tradingName     String
-  federalDocument String?   @unique
+  federalDocument String?   @unique @db.VarChar(14)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   deletedAt       DateTime?
 
-  memberships        UserCompanySuite[]
-  ChefPartnerProduct ChefPartnerProduct[]
+  chefPartnerProducts  ChefPartnerProduct[]
+  chefPartnerOrders    ChefPartnerOrder[]
+  chefPartnerCustomers ChefPartnerCustomer[]
+  userCompanySuites    UserCompanySuite[]
+
+  @@index([corporateName])
+  @@index([tradingName])
 }
 
 model Suite {
-  id          String             @id @default(uuid())
-  name        String
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  deletedAt   DateTime?
-  memberships UserCompanySuite[]
+  id               String             @id @default(uuid())
+  name             String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  deletedAt        DateTime?
+  UserCompanySuite UserCompanySuite[]
 }
 
 model UserCompanySuite {
@@ -61,20 +66,6 @@ model UserCompanySuite {
   suite   Suite    @relation(fields: [suiteId], references: [id])
 }
 
-model AuditLog {
-  id            String      @id @default(uuid())
-  entity        String
-  entityId      String
-  action        AuditAction
-  performedById String?
-  performedBy   User?       @relation("PerformedAudits", fields: [performedById], references: [id])
-  timestamp     DateTime    @default(now())
-  data          Json?
-
-  @@index([entity, entityId])
-  @@index([performedById])
-}
-
 model ChefPartnerProduct {
   id          String    @id @default(uuid())
   companyId   String
@@ -87,7 +78,106 @@ model ChefPartnerProduct {
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
 
+  company               Company                @relation(fields: [companyId], references: [id])
+  chefPartnerOrderItems ChefPartnerOrderItem[]
+
+  @@index([companyId])
+  @@index([name])
+  @@map("ChefPartner_Products")
+}
+
+model ChefPartnerCustomer {
+  id              String    @id @default(uuid())
+  fullName        String
+  email           String?   @unique
+  phone           String?
+  federalDocument String?   @db.VarChar(14)
+  companyId       String
+  note            String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  addresses ChefPartnerCustomerAddress[]
+  orders    ChefPartnerOrder[]
+
   company Company @relation(fields: [companyId], references: [id])
 
-  @@map("ChefPartner_Products")
+  @@index([companyId])
+  @@index([fullName])
+  @@map("ChefPartner_Customers")
+}
+
+model ChefPartnerCustomerAddress {
+  id           String    @id @default(uuid())
+  customerId   String
+  street       String
+  number       String    @default("S/N")
+  complement   String?
+  neighborhood String
+  city         String
+  state        String
+  zipCode      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  customer ChefPartnerCustomer @relation(fields: [customerId], references: [id])
+
+  @@index([customerId])
+  @@index([zipCode])
+  @@map("ChefPartner_CustomerAddresses")
+}
+
+model ChefPartnerOrder {
+  id              String                 @id @default(uuid())
+  customerId      String
+  companyId       String
+  scheduledAt     DateTime
+  status          ChefPartnerOrderStatus
+  originalAmount  Decimal                @db.Decimal(10, 2)
+  discountAmount  Decimal?               @db.Decimal(10, 2)
+  discountPercent Decimal?               @db.Decimal(5, 2)
+  shippingAmount  Decimal?               @db.Decimal(10, 2)
+  finalAmount     Decimal                @db.Decimal(10, 2)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  deletedAt       DateTime?
+
+  deliveryStreet       String
+  deliveryNumber       String  @default("S/N")
+  deliveryComplement   String?
+  deliveryNeighborhood String
+  deliveryCity         String
+  deliveryState        String
+  deliveryZipCode      String?
+
+  customer ChefPartnerCustomer    @relation(fields: [customerId], references: [id])
+  company  Company                @relation(fields: [companyId], references: [id])
+  items    ChefPartnerOrderItem[]
+
+  @@index([customerId])
+  @@index([companyId])
+  @@index([scheduledAt])
+  @@map("ChefPartner_Orders")
+}
+
+model ChefPartnerOrderItem {
+  id              String   @id @default(uuid())
+  orderId         String
+  productId       String
+  quantity        Int
+  unitPrice       Decimal  @db.Decimal(10, 2)
+  discountAmount  Decimal? @db.Decimal(10, 2)
+  discountPercent Decimal? @db.Decimal(5, 2)
+  finalPrice      Decimal  @db.Decimal(10, 2)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  order   ChefPartnerOrder   @relation(fields: [orderId], references: [id])
+  product ChefPartnerProduct @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("ChefPartner_OrderItems")
 }

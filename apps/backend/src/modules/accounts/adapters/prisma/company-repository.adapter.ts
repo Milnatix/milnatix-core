@@ -42,31 +42,21 @@ export class PrismaCompanyRepositoryAdapter
     id: string,
     entity: CompanyEntity,
   ): Promise<CompanyEntity | null> {
-    try {
-      const record = await this.prisma.company.update({
+    const record = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.company.update({
         where: { id },
         data: entity,
-      });
-      return this.mapRecordToEntity(record);
-    } catch (err: unknown) {
-      if (
-        err instanceof Prisma.PrismaClientKnownRequestError &&
-        err.code === 'P2025'
-      ) {
-        return null;
-      }
-      throw err;
-    }
+      }),
+    );
+    return record ? this.mapRecordToEntity(record) : null;
   }
 
-  public list(where?: Partial<CompanyEntity>): Promise<CompanyEntity[]> {
-    const companies = this.prisma.company.findMany({
+  public async list(where?: Partial<CompanyEntity>): Promise<CompanyEntity[]> {
+    const companies = await this.prisma.company.findMany({
       where: { ...where, deletedAt: null },
     });
 
-    return companies.then((companies) =>
-      companies.map((company) => this.mapRecordToEntity(company)),
-    );
+    return companies.map((company) => this.mapRecordToEntity(company));
   }
 
   public async findOne(
@@ -81,14 +71,20 @@ export class PrismaCompanyRepositoryAdapter
     return this.mapRecordToEntity(company);
   }
 
-  public async logicalDelete(id: string): Promise<void> {
-    await this.prisma.company.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
+  public async logicalDelete(id: string): Promise<CompanyEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.company.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      }),
+    );
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 
-  public async trueDelete(id: string): Promise<void> {
-    await this.prisma.company.delete({ where: { id } });
+  public async trueDelete(id: string): Promise<CompanyEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.company.delete({ where: { id } }),
+    );
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 }

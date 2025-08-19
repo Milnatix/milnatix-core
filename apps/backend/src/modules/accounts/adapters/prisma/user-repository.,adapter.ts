@@ -39,13 +39,6 @@ export class PrismaUserRepositoryAdapter implements UserRepositoryPortOut {
     return this.mapRecordToEntity(record);
   }
 
-  public async logicalDelete(id: string): Promise<void> {
-    await this.prisma.user.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
-  }
-
   public async list(where?: Where<UserEntity>): Promise<UserEntity[]> {
     const users = await this.prisma.user.findMany({
       where: { ...where, deletedAt: null },
@@ -56,32 +49,31 @@ export class PrismaUserRepositoryAdapter implements UserRepositoryPortOut {
 
   public async update(
     id: string,
-    user: UserEntity,
+    entity: UserEntity,
   ): Promise<UserEntity | null> {
-    try {
-      const record = await this.prisma.user.update({
+    const record = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.user.update({
         where: { id },
-        data: {
-          email: user.email,
-          password: user.password,
-          updatedAt: user.updatedAt,
-          deletedAt: user.deletedAt,
-        },
-      });
-      return this.mapRecordToEntity(record);
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        return null;
-      }
-      throw error;
-    }
+        data: entity,
+      }),
+    );
+    return record ? this.mapRecordToEntity(record) : null;
+  }
+  public async logicalDelete(id: string): Promise<UserEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.user.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      }),
+    );
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 
-  public async trueDelete(id: string): Promise<void> {
-    await this.prisma.user.delete({ where: { id } });
+  public async trueDelete(id: string): Promise<UserEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.user.delete({ where: { id } }),
+    );
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 
   public async findOne(where: Partial<UserEntity>): Promise<UserEntity | null> {

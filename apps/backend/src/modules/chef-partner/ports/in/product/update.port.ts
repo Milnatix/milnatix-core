@@ -1,10 +1,13 @@
-import { UpdateProductInputDTO } from '@/modules/chef-partner/application/dtos/product/update.input.dto';
 import { BaseUseCasePortIn } from '@/modules/shared/ports/in/base-usecase.port';
-import { FormProductResponseDTO } from '@milnatix-core/dtos';
+import { DetailContext } from '@/modules/shared/types/detail-context.type';
+import {
+  FormProductResponseDTO,
+  UpdateProductRequestDTO,
+} from '@milnatix-core/dtos';
 
 export const UPDATE_PRODUCT_PORT_IN_TOKEN = Symbol('UpdateProductPortIn');
 
 export type UpdateProductPortIn = BaseUseCasePortIn<
-  UpdateProductInputDTO,
+  DetailContext<UpdateProductRequestDTO>,
   FormProductResponseDTO
 >;

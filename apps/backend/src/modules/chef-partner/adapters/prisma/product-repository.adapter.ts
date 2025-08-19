@@ -47,21 +47,13 @@ export class PrismaProductRepositoryAdapter
     id: string,
     entity: ProductEntity,
   ): Promise<ProductEntity | null> {
-    try {
-      const updated = await this.prisma.chefPartnerProduct.update({
+    const updated = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.chefPartnerProduct.update({
         where: { id },
         data: entity,
-      });
-      return this.mapRecordToEntity(updated);
-    } catch (error: unknown) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        return null;
-      }
-      throw error;
-    }
+      }),
+    );
+    return updated ? this.mapRecordToEntity(updated) : null;
   }
 
   public async list(where?: Partial<ProductEntity>): Promise<ProductEntity[]> {
@@ -80,14 +72,23 @@ export class PrismaProductRepositoryAdapter
     return record ? this.mapRecordToEntity(record) : null;
   }
 
-  public async logicalDelete(id: string): Promise<void> {
-    await this.prisma.chefPartnerProduct.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
+  public async logicalDelete(id: string): Promise<ProductEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.chefPartnerProduct.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+      }),
+    );
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 
-  public async trueDelete(id: string): Promise<void> {
-    await this.prisma.chefPartnerProduct.delete({ where: { id } });
+  public async trueDelete(id: string): Promise<ProductEntity | null> {
+    const deleted = await this.prisma.executePrismaUpdate(() =>
+      this.prisma.chefPartnerProduct.delete({
+        where: { id },
+      }),
+    );
+
+    return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 }

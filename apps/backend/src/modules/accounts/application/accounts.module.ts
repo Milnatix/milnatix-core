@@ -109,6 +109,11 @@ const guards: Provider[] = [AuthGuard, CompanyGuard];
     UserCompanySuiteController,
   ],
   imports: [SharedModule],
-  exports: [...guards, TOKEN_PORT_TOKEN, CHECK_COMPANY_ACCESS_PORT_IN_TOKEN],
+  exports: [
+    ...guards,
+    TOKEN_PORT_TOKEN,
+    CHECK_COMPANY_ACCESS_PORT_IN_TOKEN,
+    REFRESH_TOKEN_PORT_IN_TOKEN,
+  ],
 })
 export class AccountsModule {}

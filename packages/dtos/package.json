@@ -12,9 +12,12 @@
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
+    "@nestjs/mapped-types": "^2.1.0",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2"
   },
   "devDependencies": {
+    "@types/node": "^24.3.0",
     "typescript": "^5.9.2"
   }
 }

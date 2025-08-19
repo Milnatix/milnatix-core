@@ -5,12 +5,11 @@ import {
   ListProductResponseDTO,
   ProductDetailsResponseDTO,
 } from '@milnatix-core/dtos';
-import { CreateProductInputDTO } from '../dtos/product/create.input.dto';
-import { UpdateProductInputDTO } from '../dtos/product/update.input.dto';
+import { CompanyIdContext } from '@/modules/shared/types/company-id-context.type';
 
 export class ProductMapper {
   public static createInputDTOToEntity(
-    productDTO: CreateProductInputDTO,
+    productDTO: CompanyIdContext<FormProductRequestDTO>,
   ): ProductEntity {
     return new ProductEntity({ ...productDTO, isAvailable: true });
   }
@@ -19,13 +18,6 @@ export class ProductMapper {
     product: ProductEntity,
   ): FormProductResponseDTO {
     return new FormProductResponseDTO({ id: product.id, name: product.name });
-  }
-
-  public static formRequestToCreateInputDTO(
-    requestDTO: FormProductRequestDTO,
-    companyId: string,
-  ): CreateProductInputDTO {
-    return new CreateProductInputDTO({ ...requestDTO, companyId });
   }
 
   public static entityToListDTO(
@@ -49,11 +41,5 @@ export class ProductMapper {
       costPrice: product.costPrice || 0,
       isAvailable: product.isAvailable,
     });
-  }
-
-  public static updateProductInputDTOToEntity(
-    productDTO: UpdateProductInputDTO,
-  ): ProductEntity {
-    return new ProductEntity({ ...productDTO, isAvailable: true });
   }
 }

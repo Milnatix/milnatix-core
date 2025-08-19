@@ -1,5 +1,5 @@
-import { GetProductDetailsInputDTO } from '@/modules/chef-partner/application/dtos/product/get-details.input.dto';
 import { BaseUseCasePortIn } from '@/modules/shared/ports/in/base-usecase.port';
+import { DetailContext } from '@/modules/shared/types/detail-context.type';
 import { ProductDetailsResponseDTO } from '@milnatix-core/dtos';
 
 export const GET_PRODUCT_DETAILS_PORT_IN_TOKEN = Symbol(
@@ -7,6 +7,6 @@ export const GET_PRODUCT_DETAILS_PORT_IN_TOKEN = Symbol(
 );
 
 export type GetProductDetailsPortIn = BaseUseCasePortIn<
-  GetProductDetailsInputDTO,
+  DetailContext,
   ProductDetailsResponseDTO
 >;

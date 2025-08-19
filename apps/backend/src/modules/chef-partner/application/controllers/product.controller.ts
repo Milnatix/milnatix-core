@@ -7,8 +7,8 @@ import {
   HttpStatus,
   Inject,
   Param,
+  Patch,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -18,14 +18,16 @@ import {
 import { AuthGuard } from '@/modules/accounts/guards/auth.guard';
 import { CompanyGuard } from '@/modules/accounts/guards/company.guard';
 import { CompanyId } from '@/modules/accounts/decoratos/company-id.decorator';
-import { ProductMapper } from '../../mappers/product.mapper';
-import { LIST_PRODUCT_PORT_IN_TOKEN } from '@/modules/chef-partner/ports/in/product/list.port';
-import { ListProductUseCase } from '../../usecases/product/list.usecase';
+import {
+  LIST_PRODUCT_PORT_IN_TOKEN,
+  ListProductPortIn,
+} from '@/modules/chef-partner/ports/in/product/list.port';
 import {
   FormProductRequestDTO,
   FormProductResponseDTO,
   ListProductResponseDTO,
   ProductDetailsResponseDTO,
+  UpdateProductRequestDTO,
 } from '@milnatix-core/dtos';
 import {
   DELETE_PRODUCT_PORT_IN_TOKEN,
@@ -47,7 +49,7 @@ export class ProductController {
     @Inject(CREATE_PRODUCT_PORT_IN_TOKEN)
     private readonly createProductUseCase: CreateProductPortIn,
     @Inject(LIST_PRODUCT_PORT_IN_TOKEN)
-    private readonly listProductUseCase: ListProductUseCase,
+    private readonly listProductUseCase: ListProductPortIn,
     @Inject(DELETE_PRODUCT_PORT_IN_TOKEN)
     private readonly deleteProductUseCase: DeleteProductPortIn,
     @Inject(GET_PRODUCT_DETAILS_PORT_IN_TOKEN)
@@ -62,11 +64,10 @@ export class ProductController {
     @Body() productRequestDTO: FormProductRequestDTO,
     @CompanyId() companyId: string,
   ): Promise<FormProductResponseDTO> {
-    const productInputDTO = ProductMapper.formRequestToCreateInputDTO(
-      productRequestDTO,
+    return await this.createProductUseCase.execute({
+      ...productRequestDTO,
       companyId,
-    );
-    return await this.createProductUseCase.execute(productInputDTO);
+    });
   }
 
   @Get()
@@ -76,33 +77,36 @@ export class ProductController {
     return await this.listProductUseCase.execute({ companyId });
   }
 
-  @Delete(':productId')
+  @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async delete(@Param('productId') productId: string): Promise<void> {
-    await this.deleteProductUseCase.execute({ productId });
+  public async delete(
+    @Param('id') id: string,
+    @CompanyId() companyId: string,
+  ): Promise<void> {
+    await this.deleteProductUseCase.execute({ id, companyId });
   }
 
   @Get(':productId')
   public async getDetails(
-    @Param('productId') productId: string,
+    @Param('productId') id: string,
     @CompanyId() companyId: string,
   ): Promise<ProductDetailsResponseDTO> {
     return await this.getProductDetailsUseCase.execute({
-      productId,
+      id,
       companyId,
     });
   }
 
-  @Put(':productId')
+  @Patch(':productId')
   public async update(
     @Param('productId') productId: string,
     @CompanyId() companyId: string,
-    @Body() product: FormProductRequestDTO,
+    @Body() product: UpdateProductRequestDTO,
   ): Promise<FormProductResponseDTO> {
     return await this.updateProductUseCase.execute({
-      ...product,
       id: productId,
       companyId,
+      payload: product,
     });
   }
 }

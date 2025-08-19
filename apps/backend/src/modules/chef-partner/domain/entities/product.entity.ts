@@ -4,14 +4,14 @@ import {
 } from '@/modules/shared/domain/entities/base.entity';
 import { capitalizeName } from '@/modules/shared/utils/capitalize-name.util';
 
-export type ProductEntityProps = BaseEntityProps & {
+export interface ProductEntityProps extends BaseEntityProps {
   companyId: string;
   name: string;
   description: string | null;
   salePrice: number;
   costPrice: number | null;
   isAvailable: boolean;
-};
+}
 
 export class ProductEntity extends BaseEntity implements ProductEntityProps {
   public name: string;

@@ -5,8 +5,11 @@ import {
   ProductRepositoryPortOut,
 } from '@/modules/chef-partner/ports/out/product-repository.port';
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
-import { CreateProductInputDTO } from '../../dtos/product/create.input.dto';
-import { FormProductResponseDTO } from '@milnatix-core/dtos';
+import {
+  FormProductRequestDTO,
+  FormProductResponseDTO,
+} from '@milnatix-core/dtos';
+import { CompanyIdContext } from '@/modules/shared/types/company-id-context.type';
 
 @Injectable()
 export class CreateProductUseCase implements CreateProductPortIn {
@@ -16,7 +19,7 @@ export class CreateProductUseCase implements CreateProductPortIn {
   ) {}
 
   public async execute(
-    productDTO: CreateProductInputDTO,
+    productDTO: CompanyIdContext<FormProductRequestDTO>,
   ): Promise<FormProductResponseDTO> {
     const product = ProductMapper.createInputDTOToEntity(productDTO);
     const productWithSameName = await this.productRepository.findOne({
