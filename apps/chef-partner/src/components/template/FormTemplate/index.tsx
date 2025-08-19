@@ -24,7 +24,7 @@ const FormTemplate: React.FC<FormTemplateProps> = ({
   useEffect(() => {
     if (!isSubmitting) return;
 
-    const handlePopState = (e: PopStateEvent) => {
+    const handlePopState = () => {
       window.history.pushState(null, document.title, window.location.href);
       alert('Não é possível voltar enquanto o formulário está sendo enviado.');
     };
@@ -43,9 +43,9 @@ const FormTemplate: React.FC<FormTemplateProps> = ({
       <div className="flex flex-1 justify-center items-center px-2 py-4">
         <Card className="h-full max-w-md w-full">
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              onSubmit();
+              await onSubmit();
             }}
             className="flex flex-col h-full"
           >

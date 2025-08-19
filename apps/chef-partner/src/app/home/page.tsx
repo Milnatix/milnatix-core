@@ -5,7 +5,7 @@ import MainNavigationTemplate from '@/components/template/MainNavigationTemplate
 
 const HomePage: React.FC = () => {
   return (
-    <MainNavigationTemplate title='Início' >
+    <MainNavigationTemplate title="Início">
       <div>Hello World!</div>
     </MainNavigationTemplate>
   );

@@ -12,13 +12,11 @@ const TextArea: React.FC<TextAreaProps> = ({
   error,
   helpText,
   placeholder,
-  id,
   className = '',
   ...rest
 }) => {
-  const [focused, setFocused] = useState(false);
   const [filled, setFilled] = useState(false);
-  const textareaId = id || useId();
+  const textareaId = useId();
 
   useEffect(() => {
     if (rest.value && rest.value.toString().length > 0) setFilled(true);
@@ -30,8 +28,6 @@ const TextArea: React.FC<TextAreaProps> = ({
       <textarea
         id={textareaId}
         placeholder={placeholder || ' '}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
         aria-invalid={!!error}
         aria-describedby={
           error

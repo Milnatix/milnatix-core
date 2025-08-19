@@ -11,13 +11,11 @@ const Input: React.FC<InputProps> = ({
   error,
   helpText,
   placeholder,
-  id,
   className = '',
   ...rest
 }) => {
-  const [focused, setFocused] = useState(false);
   const [filled, setFilled] = useState(false);
-  const inputId = id || useId();
+  const inputId = useId();
 
   useEffect(() => {
     if (rest.value && rest.value.toString().length > 0) setFilled(true);
@@ -29,8 +27,6 @@ const Input: React.FC<InputProps> = ({
       <input
         id={inputId}
         placeholder={placeholder || ' '}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
         aria-invalid={!!error}
         aria-describedby={
           error ? `${inputId}-error` : helpText ? `${inputId}-help` : undefined

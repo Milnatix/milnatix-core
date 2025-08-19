@@ -1,4 +1,3 @@
-
 import { HttpProductRepositoryAdapter } from '@/adapters/http/product-repository.adapter';
 import { ListProductsUseCase } from '@/domain/usecases/product/list.usecase';
 import { Result } from '@/shared/types/Result.type';
@@ -42,7 +41,6 @@ export async function getDetails(
   );
   return await getProductDetailsUseCase.execute(productId);
 }
-
 
 export async function update(productId: string, product: ProductFormData) {
   const updateProductUseCase = new UpdateProductUseCase(productRepository);

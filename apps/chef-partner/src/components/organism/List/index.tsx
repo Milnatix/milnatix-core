@@ -21,7 +21,7 @@ const List = <T extends { id: string }>({
     <div
       className={`flex-1 flex flex-col overflow-y-auto ${className} h-[100%]`}
     >
-      {items.map((item, index) => (
+      {items.map((item) => (
         <React.Fragment key={item.id}>{renderItem(item)}</React.Fragment>
       ))}
     </div>

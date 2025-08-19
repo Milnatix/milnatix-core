@@ -14,7 +14,7 @@ import Button from '@/components/atom/Button';
 import Card from '@/components/atom/Card';
 import { useAlertStore } from '@/shared/stores/alert.store';
 
-export const LoginPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   const router = useRouter();
   const { showAlert: show } = useAlertStore();
 

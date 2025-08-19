@@ -7,16 +7,12 @@ import {
   ProductDetailsResponseDTO,
 } from '@milnatix-core/dtos';
 import { apiClient, ApiException } from '@milnatix-core/http-client';
-import {
-  HttpRequest,
-} from '@milnatix-core/http-client/dist/ports/http-client.port';
+import { HttpRequest } from '@milnatix-core/http-client/dist/ports/http-client.port';
 
 export class HttpProductRepositoryAdapter implements ProductsRepositoryPortOut {
   private readonly baseUrl = '/chef-partner/product';
 
-  private async request<T>(
-    config: HttpRequest,
-  ): Promise<Result<T, Error>> {
+  private async request<T>(config: HttpRequest): Promise<Result<T, Error>> {
     try {
       const response = await apiClient.request<T>(config);
       return Result.ok(response.data);

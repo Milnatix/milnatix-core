@@ -1,6 +1,9 @@
 'use client';
 
-import { deleteProduct, list } from '@/application/products/facades/product.facade';
+import {
+  deleteProduct,
+  list,
+} from '@/application/products/facades/product.facade';
 import ListItem from '@/components/molecule/ListItem';
 import List from '@/components/organism/List';
 import MainNavigationTemplate from '@/components/template/MainNavigationTemplate';
@@ -15,10 +18,11 @@ export default function ProductPage() {
   const { showConfirmModal } = useConfirmModalStore();
   const { showAlert } = useAlertStore();
 
-  const [productList, setProductList] = useState<ListProductResponseDTO[] | null>(null);
+  const [productList, setProductList] = useState<
+    ListProductResponseDTO[] | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Busca produtos
   useEffect(() => {
     const fetchProducts = async () => {
       const result = await list();
@@ -28,32 +32,39 @@ export default function ProductPage() {
         setError(result.error.message);
       }
     };
-    fetchProducts();
+
+    void fetchProducts();
   }, []);
 
-  const handleDeleteProduct = async (productId: string) => {
-    const result = await deleteProduct(productId);
-    if (!result.success) {
+  const handleDeleteProduct = useCallback(
+    async (productId: string) => {
+      const result = await deleteProduct(productId);
+      if (!result.success) {
+        showAlert({
+          title: 'Erro ao excluir produto',
+          message: result.error.message,
+          type: 'error',
+        });
+        return;
+      }
+
+      setProductList((prev) => prev?.filter((p) => p.id !== productId) || null);
+
       showAlert({
-        title: 'Erro ao excluir produto',
-        message: result.error.message,
-        type: 'error',
+        title: 'Produto excluído com sucesso',
+        message: 'O produto foi excluído com sucesso',
+        type: 'success',
       });
-      return;
-    }
+    },
+    [showAlert],
+  );
 
-    setProductList((prev) => prev?.filter((p) => p.id !== productId) || null);
-
-    showAlert({
-      title: 'Produto excluído com sucesso',
-      message: 'O produto foi excluído com sucesso',
-      type: 'success',
-    });
-  };
-
-  const handleEditProduct = useCallback((product: ListProductResponseDTO) => {
-    router.push(`/products/${product.id}/edit`);
-  }, []);
+  const handleEditProduct = useCallback(
+    (product: ListProductResponseDTO) => {
+      router.push(`/products/${product.id}/edit`);
+    },
+    [router],
+  );
 
   const handleAddProduct = () => {
     router.push('/products/new');
@@ -70,7 +81,7 @@ export default function ProductPage() {
         confirmButtonVariant: 'danger',
       });
     },
-    [],
+    [handleDeleteProduct, showConfirmModal],
   );
 
   if (error) {

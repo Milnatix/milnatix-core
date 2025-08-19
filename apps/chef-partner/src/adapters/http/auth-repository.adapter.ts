@@ -27,5 +27,4 @@ export class HttpAuthRepositoryAdapter implements AuthRepositoryPortOut {
       throw error;
     }
   }
-
 }

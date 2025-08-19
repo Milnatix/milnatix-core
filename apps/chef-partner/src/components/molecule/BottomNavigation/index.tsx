@@ -17,7 +17,10 @@ interface BottomNavigationProps {
   onFabClick?: () => void;
 }
 
-const BottomNavigation: React.FC<BottomNavigationProps> = ({ items, onFabClick }) => {
+const BottomNavigation: React.FC<BottomNavigationProps> = ({
+  items,
+  onFabClick,
+}) => {
   const pathname = usePathname();
 
   return (

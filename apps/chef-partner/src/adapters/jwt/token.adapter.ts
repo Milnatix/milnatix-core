@@ -13,7 +13,7 @@ export class JWTTokenAdapter implements TokenPortOut {
       if (!decoded.exp) return true;
       const now = Date.now() / 1000;
       return decoded.exp < now;
-    } catch (error) {
+    } catch {
       return true;
     }
   }

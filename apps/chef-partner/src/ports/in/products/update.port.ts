@@ -7,4 +7,3 @@ export type UpdateProductPortIn = BaseUseCasePortIn<
   UpdateProductInputDTO,
   Result<FormProductResponseDTO, Error>
 >;
-""
