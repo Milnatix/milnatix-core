@@ -5,7 +5,7 @@ import BottomNavigation, {
   NavItem,
 } from '@/components/molecule/BottomNavigation';
 import React from 'react';
-import { FaHome } from 'react-icons/fa';
+import { FaHome, FaUsers } from 'react-icons/fa';
 import { FiShoppingBag } from 'react-icons/fi';
 
 interface MainNavigationTemplateProps {
@@ -24,6 +24,11 @@ const items: NavItem[] = [
     label: 'Produtos',
     path: '/products',
     icon: <FiShoppingBag />,
+  },
+  {
+    label: 'Clientes',
+    path: '/customers',
+    icon: <FaUsers />,
   },
 ];
 

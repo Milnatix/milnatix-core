@@ -19,15 +19,17 @@ interface ProductFormProps {
   title: string;
   onSubmit: (
     product: ProductFormData,
-  ) => Promise<Result<FormProductResponseDTO, Error>>;
-  initialData?: ProductFormData | null;
+  ) => Promise<
+    Result<FormProductResponseDTO, { message: string; status?: number }>
+  >;
+  productInitialData?: ProductFormData | null;
   loading?: boolean;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
   title,
   onSubmit,
-  initialData,
+  productInitialData,
   loading,
 }) => {
   const router = useRouter();
@@ -41,21 +43,22 @@ const ProductForm: React.FC<ProductFormProps> = ({
   } = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
     mode: 'onSubmit',
-    defaultValues: initialData || {
+    defaultValues: productInitialData || {
       salePrice: 0,
       costPrice: null,
     },
   });
 
   useEffect(() => {
-    if (initialData) {
-      reset(initialData);
+    if (productInitialData) {
+      reset(productInitialData);
     }
-  }, [initialData, reset]);
+  }, [productInitialData, reset]);
+
+  const goToProductsList = () => router.replace('/products');
 
   const handleFormSubmit = handleSubmit(async (data) => {
     const result = await onSubmit(data);
-    console.log('create result:', result);
 
     if (!result.success) {
       showAlert({
@@ -67,15 +70,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
       return;
     }
 
-    router.replace('/products');
+    goToProductsList();
   });
-
-  const handleCancel = () => router.replace('/products');
 
   return (
     <FormTemplate
       title={title}
-      onCancel={handleCancel}
+      onCancel={goToProductsList}
       onSubmit={handleFormSubmit}
       isSubmitting={isSubmitting}
       loading={loading}
@@ -83,13 +84,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
       <Input
         label="Nome (*)"
         autoFocus
-        maxLength={255}
         {...register('name')}
         error={errors.name?.message}
       />
       <TextArea
         label="Descrição"
-        maxLength={255}
         {...register('description')}
         error={errors.description?.message}
       />

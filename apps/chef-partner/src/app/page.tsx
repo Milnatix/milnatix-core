@@ -7,12 +7,14 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { signIn } from '@/application/auth/auth.facade';
 import { useRouter } from 'next/navigation';
 import Input from '@/components/atom/Input';
 import Button from '@/components/atom/Button';
 import Card from '@/components/atom/Card';
 import { useAlertStore } from '@/shared/stores/alert.store';
+import { AuthService } from '@/services/auth.service';
+
+const authService = new AuthService();
 
 const LoginPage: React.FC = () => {
   const router = useRouter();
@@ -32,7 +34,11 @@ const LoginPage: React.FC = () => {
   };
 
   const onSubmit = async (data: SignInFormData) => {
-    const response = await signIn(data);
+    //TODO: Verificar forma de melhorar isso aqui?
+    const response = await authService.signIn({
+      ...data,
+      suiteId: 'chef-partner',
+    });
     if (!response.success) {
       show({
         title: 'Atenção!',

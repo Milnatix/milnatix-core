@@ -69,17 +69,12 @@ export class PrismaSuiteRepositoryAdapter implements SuiteRepositoryPortOut {
     return deleted ? this.mapRecordToEntity(deleted) : null;
   }
 
-  public async update(
-    id: string,
-    entity: SuiteEntity,
-  ): Promise<SuiteEntity | null> {
-    const record = await this.prisma.executePrismaUpdate(() =>
-      this.prisma.suite.update({
-        where: { id },
-        data: entity,
-      }),
-    );
-    return record ? this.mapRecordToEntity(record) : null;
+  public async update(id: string, entity: SuiteEntity): Promise<SuiteEntity> {
+    const record = await this.prisma.suite.update({
+      where: { id },
+      data: entity,
+    });
+    return this.mapRecordToEntity(record);
   }
 
   public async findOne(

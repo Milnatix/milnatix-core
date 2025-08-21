@@ -89,7 +89,7 @@ model ChefPartnerProduct {
 model ChefPartnerCustomer {
   id              String    @id @default(uuid())
   fullName        String
-  email           String?   @unique
+  email           String?
   phone           String?
   federalDocument String?   @db.VarChar(14)
   companyId       String

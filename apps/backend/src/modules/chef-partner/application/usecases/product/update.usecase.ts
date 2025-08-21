@@ -10,6 +10,7 @@ import {
 } from '@/modules/chef-partner/ports/out/product-repository.port';
 import { ProductMapper } from '../../mappers/product.mapper';
 import { DetailContext } from '@/modules/shared/types/detail-context.type';
+import { ProductEntity } from '@/modules/chef-partner/domain/entities/product.entity';
 
 @Injectable()
 export class UpdateProductUseCase implements UpdateProductPortIn {
@@ -21,13 +22,23 @@ export class UpdateProductUseCase implements UpdateProductPortIn {
   public async execute(
     dto: DetailContext<UpdateProductRequestDTO>,
   ): Promise<FormProductResponseDTO> {
-    const productUpdated = await this.productRepository.update(dto.id, {
+    const productInDB = await this.productRepository.findOne({
+      id: dto.id,
+      companyId: dto.companyId,
+    });
+    if (!productInDB) {
+      throw new NotFoundException('Produto nao encontrado');
+    }
+
+    const productToUpdate = new ProductEntity({
+      ...productInDB,
       ...dto.payload,
     });
 
-    if (!productUpdated) {
-      throw new NotFoundException('Produto nao encontrado');
-    }
+    const productUpdated = await this.productRepository.update(
+      dto.id,
+      productToUpdate,
+    );
 
     return ProductMapper.entityToFormResponseDTO(productUpdated);
   }

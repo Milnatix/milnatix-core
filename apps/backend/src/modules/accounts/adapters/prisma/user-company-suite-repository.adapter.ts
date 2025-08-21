@@ -76,14 +76,12 @@ export class PrismaUserCompanySuiteRepositoryAdapter
   public async update(
     id: string,
     entity: UserCompanySuiteEntity,
-  ): Promise<UserCompanySuiteEntity | null> {
-    const record = await this.prisma.executePrismaUpdate(() =>
-      this.prisma.userCompanySuite.update({
-        where: { id },
-        data: entity,
-      }),
-    );
-    return record ? this.mapRecordToEntity(record) : null;
+  ): Promise<UserCompanySuiteEntity> {
+    const record = await this.prisma.userCompanySuite.update({
+      where: { id },
+      data: entity,
+    });
+    return this.mapRecordToEntity(record);
   }
 
   public async findOne(

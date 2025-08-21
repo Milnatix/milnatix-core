@@ -1,24 +1,23 @@
 'use client';
 
 import ProductForm from '@/application/products/components/ProductForm';
-import {
-  getDetails,
-  update,
-} from '@/application/products/facades/product.facade';
 import { ProductFormData } from '@/application/products/schemas/form.schema';
+import { ProductService } from '@/services/product.service';
 import { use, useEffect, useState } from 'react';
 
 interface EditProductPageProps {
   params: Promise<{ id: string }>;
 }
 
+const productService = new ProductService();
+
 const EditProductPage: React.FC<EditProductPageProps> = ({ params }) => {
   const { id } = use(params);
   const [initialData, setInitialData] = useState<ProductFormData | null>(null);
 
   useEffect(() => {
-    const getProducts = async () => {
-      const result = await getDetails(id);
+    const getProductDetails = async () => {
+      const result = await productService.getDetails(id);
       if (result.success) {
         const product = result.value;
         setInitialData({
@@ -30,16 +29,17 @@ const EditProductPage: React.FC<EditProductPageProps> = ({ params }) => {
       }
     };
 
-    void getProducts();
+    void getProductDetails();
   }, [id]);
 
-  const handleUpdate = (data: ProductFormData) => update(id, data);
+  const handleUpdate = (data: ProductFormData) =>
+    productService.update(id, data);
 
   return (
     <ProductForm
       title="Editar Produto"
       onSubmit={handleUpdate}
-      initialData={initialData}
+      productInitialData={initialData}
       loading={!initialData}
     />
   );

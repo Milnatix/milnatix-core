@@ -47,17 +47,12 @@ export class PrismaUserRepositoryAdapter implements UserRepositoryPortOut {
     return users.map((user) => this.mapRecordToEntity(user));
   }
 
-  public async update(
-    id: string,
-    entity: UserEntity,
-  ): Promise<UserEntity | null> {
-    const record = await this.prisma.executePrismaUpdate(() =>
-      this.prisma.user.update({
-        where: { id },
-        data: entity,
-      }),
-    );
-    return record ? this.mapRecordToEntity(record) : null;
+  public async update(id: string, entity: UserEntity): Promise<UserEntity> {
+    const record = await this.prisma.user.update({
+      where: { id },
+      data: entity,
+    });
+    return this.mapRecordToEntity(record);
   }
   public async logicalDelete(id: string): Promise<UserEntity | null> {
     const deleted = await this.prisma.executePrismaUpdate(() =>

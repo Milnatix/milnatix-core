@@ -29,6 +29,7 @@ import { UPDATE_CUSTOMER_PORT_IN_TOKEN } from '../ports/in/customer/update.port'
 import { UpdateCustomerUseCase } from './usecases/customer/update.usecase';
 import { DELETE_CUSTOMER_PORT_IN_TOKEN } from '../ports/in/customer/delete.port';
 import { DeleteCustomerUseCase } from './usecases/customer/delete.usecase';
+import { CustomerUniqueValidator } from './validators/customer/customer-unique.validator';
 
 const useCases: Provider[] = [
   {
@@ -88,8 +89,10 @@ const adapters: Provider[] = [
   },
 ];
 
+const validators: Provider[] = [CustomerUniqueValidator];
+
 @Module({
-  providers: [...useCases, ...adapters],
+  providers: [...useCases, ...adapters, ...validators],
   controllers: [ProductController, CustomerController],
   imports: [SharedModule, AccountsModule],
 })

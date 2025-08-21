@@ -1,6 +1,6 @@
-import { PartialType, OmitType } from '@nestjs/mapped-types';
-import { CreateCustomerRequestDTO } from './create.request.dto';
+import { PartialType, OmitType } from "@nestjs/mapped-types";
+import { CreateCustomerRequestDTO } from "./create.request.dto";
 
 export class UpdateCustomerRequestDTO extends PartialType(
-  OmitType(CreateCustomerRequestDTO, ['addresses'] as const),
+  CreateCustomerRequestDTO
 ) {}

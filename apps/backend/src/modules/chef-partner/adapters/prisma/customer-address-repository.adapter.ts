@@ -52,14 +52,12 @@ export class PrismaCustomerAddressRepositoryAdapter
   public async update(
     id: string,
     entity: CustomerAddressEntity,
-  ): Promise<CustomerAddressEntity | null> {
-    const updated = await this.prisma.executePrismaUpdate(() =>
-      this.prisma.chefPartnerCustomerAddress.update({
-        where: { id },
-        data: entity,
-      }),
-    );
-    return updated ? this.mapRecordToEntity(updated) : null;
+  ): Promise<CustomerAddressEntity> {
+    const updated = await this.prisma.chefPartnerCustomerAddress.update({
+      where: { id },
+      data: entity,
+    });
+    return this.mapRecordToEntity(updated);
   }
 
   public async list(

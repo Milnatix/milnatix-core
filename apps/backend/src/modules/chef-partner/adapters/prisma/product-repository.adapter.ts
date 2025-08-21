@@ -46,14 +46,12 @@ export class PrismaProductRepositoryAdapter
   public async update(
     id: string,
     entity: ProductEntity,
-  ): Promise<ProductEntity | null> {
-    const updated = await this.prisma.executePrismaUpdate(() =>
-      this.prisma.chefPartnerProduct.update({
-        where: { id },
-        data: entity,
-      }),
-    );
-    return updated ? this.mapRecordToEntity(updated) : null;
+  ): Promise<ProductEntity> {
+    const updated = await this.prisma.chefPartnerProduct.update({
+      where: { id },
+      data: entity,
+    });
+    return this.mapRecordToEntity(updated);
   }
 
   public async list(where?: Partial<ProductEntity>): Promise<ProductEntity[]> {

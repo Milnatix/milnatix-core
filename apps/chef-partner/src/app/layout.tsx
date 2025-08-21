@@ -1,6 +1,7 @@
-// src/app/layout.tsx
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import GlobalAlert from '@/components/molecule/GlobalAlert';
+import GlobalConfirmModal from '@/components/molecule/GlobalConfirmModal';
 
 export const metadata: Metadata = {
   title: 'ChefPartner',
@@ -22,7 +23,11 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <GlobalAlert />
+        <GlobalConfirmModal />
+      </body>
     </html>
   );
 }

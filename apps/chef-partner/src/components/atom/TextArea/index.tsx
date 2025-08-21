@@ -29,6 +29,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         id={textareaId}
         placeholder={placeholder || ' '}
         aria-invalid={!!error}
+        maxLength={rest.maxLength || 255}
         aria-describedby={
           error
             ? `${textareaId}-error`

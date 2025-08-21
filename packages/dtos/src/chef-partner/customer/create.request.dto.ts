@@ -1,35 +1,10 @@
-import { IsString, IsOptional, IsEmail, Length, ValidateNested, IsNotEmpty } from 'class-validator';
-import { Type } from 'class-transformer';
-
-export class CreateCustomerAddressRequestDTO {
-  @IsString()
-  @IsNotEmpty()
-  street!: string;
-
-  @IsOptional()
-  @IsString()
-  number?: string;
-
-  @IsOptional()
-  @IsString()
-  complement?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  neighborhood!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  city!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  state!: string;
-
-  @IsOptional()
-  @IsString()
-  zipCode?: string;
-}
+import {
+  IsString,
+  IsOptional,
+  IsEmail,
+  Length,
+  IsNotEmpty,
+} from "class-validator";
 
 export class CreateCustomerRequestDTO {
   @IsString()
@@ -38,24 +13,20 @@ export class CreateCustomerRequestDTO {
 
   @IsOptional()
   @IsEmail()
-  email?: string;
+  email?: string | null;
 
   @IsOptional()
   @IsString()
-  phone?: string;
+  phone?: string | null;
 
   @IsOptional()
   @IsString()
-  @Length(11, 14, { message: 'federalDocument must be 11 (CPF) or 14 (CNPJ) digits' })
-  federalDocument?: string;
+  @Length(11, 14, {
+    message: "federalDocument must be 11 (CPF) or 14 (CNPJ) digits",
+  })
+  federalDocument?: string | null;
 
   @IsOptional()
   @IsString()
-  note?: string;
-
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => CreateCustomerAddressRequestDTO)
-  addresses?: CreateCustomerAddressRequestDTO[];
-
+  note?: string | null;
 }

@@ -46,21 +46,20 @@ export class PrismaCustomerRepositoryAdapter
   public async update(
     id: string,
     entity: CustomerEntity,
-  ): Promise<CustomerEntity | null> {
-    const updated = await this.prisma.executePrismaUpdate(() =>
-      this.prisma.chefPartnerCustomer.update({
-        where: { id, deletedAt: null },
-        data: entity,
-      }),
-    );
-    return updated ? this.mapRecordToEntity(updated) : null;
+  ): Promise<CustomerEntity> {
+    const updated = await this.prisma.chefPartnerCustomer.update({
+      where: { id, deletedAt: null },
+      data: entity,
+    });
+    return this.mapRecordToEntity(updated);
   }
 
   public async list(
     where?: Partial<CustomerEntity>,
   ): Promise<CustomerEntity[]> {
+    const prismaWhere = this.prisma.toPrismaWhere(where);
     const records = await this.prisma.chefPartnerCustomer.findMany({
-      where: { ...where, deletedAt: null },
+      where: { ...prismaWhere, deletedAt: null },
     });
     return records.map((record) => this.mapRecordToEntity(record));
   }
@@ -68,8 +67,10 @@ export class PrismaCustomerRepositoryAdapter
   public async findOne(
     where: Partial<CustomerEntity>,
   ): Promise<CustomerEntity | null> {
+    const prismaWhere = this.prisma.toPrismaWhere(where);
+    console.log(JSON.stringify(prismaWhere));
     const record = await this.prisma.chefPartnerCustomer.findFirst({
-      where: { ...where, deletedAt: null },
+      where: { ...prismaWhere, deletedAt: null },
     });
     return record ? this.mapRecordToEntity(record) : null;
   }

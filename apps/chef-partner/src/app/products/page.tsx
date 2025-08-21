@@ -1,123 +1,77 @@
 'use client';
 
-import {
-  deleteProduct,
-  list,
-} from '@/application/products/facades/product.facade';
-import ListItem from '@/components/molecule/ListItem';
-import List from '@/components/organism/List';
+import MainList from '@/components/organism/MainList';
 import MainNavigationTemplate from '@/components/template/MainNavigationTemplate';
+import { ProductService } from '@/services/product.service';
 import { useAlertStore } from '@/shared/stores/alert.store';
-import { useConfirmModalStore } from '@/shared/stores/confirm-modal.store';
 import { ListProductResponseDTO } from '@milnatix-core/dtos';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
+
+const productService = new ProductService();
 
 export default function ProductPage() {
   const router = useRouter();
-  const { showConfirmModal } = useConfirmModalStore();
   const { showAlert } = useAlertStore();
 
   const [productList, setProductList] = useState<
     ListProductResponseDTO[] | null
   >(null);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const result = await list();
+      const result = await productService.list();
       if (result.success) {
         setProductList(result.value);
       } else {
-        setError(result.error.message);
+        showAlert({
+          title: 'Erro ao listar produtos',
+          message: result.error.message,
+          type: 'error',
+        });
+        setProductList([]);
       }
     };
 
     void fetchProducts();
   }, []);
 
-  const handleDeleteProduct = useCallback(
-    async (productId: string) => {
-      const result = await deleteProduct(productId);
-      if (!result.success) {
-        showAlert({
-          title: 'Erro ao excluir produto',
-          message: result.error.message,
-          type: 'error',
-        });
-        return;
-      }
-
-      setProductList((prev) => prev?.filter((p) => p.id !== productId) || null);
-
+  const handleDeleteProduct = async (product: ListProductResponseDTO) => {
+    const result = await productService.delete(product.id);
+    if (!result.success) {
       showAlert({
-        title: 'Produto excluído com sucesso',
-        message: 'O produto foi excluído com sucesso',
-        type: 'success',
+        title: 'Erro ao excluir produto',
+        message: result.error.message,
+        type: 'error',
       });
-    },
-    [showAlert],
-  );
+      return;
+    }
 
-  const handleEditProduct = useCallback(
-    (product: ListProductResponseDTO) => {
-      router.push(`/products/${product.id}/edit`);
-    },
-    [router],
-  );
+    setProductList((prev) => prev?.filter((p) => p.id !== product.id) || null);
+
+    showAlert({
+      title: 'Produto excluído com sucesso',
+      message: 'O produto foi excluído com sucesso',
+      type: 'success',
+    });
+  };
+
+  const handleEditProduct = (product: ListProductResponseDTO) => {
+    router.push(`/products/${product.id}/edit`);
+  };
 
   const handleAddProduct = () => {
     router.push('/products/new');
   };
 
-  const handleConfirmDeleteProduct = useCallback(
-    (product: ListProductResponseDTO) => {
-      showConfirmModal({
-        title: 'Excluir produto',
-        message: `Tem certeza que deseja excluir o produto "${product.name}"?`,
-        onConfirm: async () => await handleDeleteProduct(product.id),
-        cancelText: 'Cancelar',
-        confirmText: 'Excluir',
-        confirmButtonVariant: 'danger',
-      });
-    },
-    [handleDeleteProduct, showConfirmModal],
-  );
-
-  if (error) {
-    return (
-      <MainNavigationTemplate title="Produtos">
-        <div className="h-screen w-screen flex items-center justify-center">
-          <p>{error}</p>
-        </div>
-      </MainNavigationTemplate>
-    );
-  }
-
-  if (!productList) {
-    return (
-      <MainNavigationTemplate title="Produtos">
-        <div className="h-screen w-screen flex items-center justify-center">
-          <p>Carregando...</p>
-        </div>
-      </MainNavigationTemplate>
-    );
-  }
-
   return (
     <MainNavigationTemplate title="Produtos" onFabClick={handleAddProduct}>
-      <div className="flex-1 overflow-y-auto px-2 pt-2">
-        <List
-          items={productList}
-          renderItem={(product) => (
-            <ListItem
-              title={product.name}
-              onEdit={() => handleEditProduct(product)}
-              onDelete={() => handleConfirmDeleteProduct(product)}
-            />
-          )}
-        />
-      </div>
+      <MainList
+        items={productList}
+        getItemTitle={(product) => product.name}
+        onEditItem={handleEditProduct}
+        onDeleteItem={handleDeleteProduct}
+      />
     </MainNavigationTemplate>
   );
 }

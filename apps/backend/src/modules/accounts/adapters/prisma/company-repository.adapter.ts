@@ -41,14 +41,12 @@ export class PrismaCompanyRepositoryAdapter
   public async update(
     id: string,
     entity: CompanyEntity,
-  ): Promise<CompanyEntity | null> {
-    const record = await this.prisma.executePrismaUpdate(() =>
-      this.prisma.company.update({
-        where: { id },
-        data: entity,
-      }),
-    );
-    return record ? this.mapRecordToEntity(record) : null;
+  ): Promise<CompanyEntity> {
+    const record = await this.prisma.company.update({
+      where: { id },
+      data: entity,
+    });
+    return this.mapRecordToEntity(record);
   }
 
   public async list(where?: Partial<CompanyEntity>): Promise<CompanyEntity[]> {
