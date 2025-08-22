@@ -1,4 +1,3 @@
-export type DetailContext<T = undefined> = {
+export type IdContext<T = undefined> = {
   id: string;
-  companyId: string;
 } & (T extends undefined ? unknown : { payload: T });

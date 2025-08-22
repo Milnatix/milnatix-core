@@ -1,13 +1,4 @@
-
-interface CustomerDetailAddressResponseDTOProps {
-  street: string;
-  number: string | null;
-  complement: string | null;
-  neighborhood: string;
-  city: string;
-  state: string;
-  zipCode: string | null;
-}
+import { SummaryCustomerAddressDTO } from "../customer-address";
 
 interface CustomerDetailResponseDTOProps {
   fullName: string;
@@ -15,36 +6,18 @@ interface CustomerDetailResponseDTOProps {
   phone: string | null;
   federalDocument: string | null;
   note: string | null;
-  addresses: CustomerDetailAddressResponseDTO[];
+  addresses: SummaryCustomerAddressDTO[];
 }
 
-export class CustomerDetailAddressResponseDTO implements CustomerDetailAddressResponseDTOProps {
-  public street: string;
-  public number: string | null;
-  public complement: string | null;
-  public neighborhood: string;
-  public city: string;
-  public state: string;
-  public zipCode: string | null;
-
-  constructor(props: CustomerDetailAddressResponseDTOProps) {
-    this.street = props.street;
-    this.number = props.number;
-    this.complement = props.complement;
-    this.neighborhood = props.neighborhood;
-    this.city = props.city;
-    this.state = props.state;
-    this.zipCode = props.zipCode;
-  }
-}
-
-export class CustomerDetailResponseDTO implements CustomerDetailResponseDTOProps {
+export class CustomerDetailResponseDTO
+  implements CustomerDetailResponseDTOProps
+{
   public fullName: string;
   public email: string | null;
   public phone: string | null;
   public federalDocument: string | null;
   public note: string | null;
-  public addresses: CustomerDetailAddressResponseDTO[];
+  public addresses: SummaryCustomerAddressDTO[];
 
   constructor(props: CustomerDetailResponseDTOProps) {
     this.fullName = props.fullName;
@@ -52,7 +25,8 @@ export class CustomerDetailResponseDTO implements CustomerDetailResponseDTOProps
     this.phone = props.phone;
     this.federalDocument = props.federalDocument;
     this.note = props.note;
-    this.addresses = props.addresses.map(address => new CustomerDetailAddressResponseDTO(address));
+    this.addresses = props.addresses.map(
+      (address) => new SummaryCustomerAddressDTO(address)
+    );
   }
-
 }

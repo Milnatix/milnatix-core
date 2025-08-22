@@ -6,23 +6,30 @@ import {
 import { CustomerSummaryDTO } from '@milnatix-core/dtos';
 import { Inject, Injectable } from '@nestjs/common';
 import { CustomerMapper } from '../../mappers/customer.mapper';
+import { BaseListUseCase } from '@/modules/shared/application/usecases/base-list.usecase';
+import { CustomerEntity } from '@/modules/chef-partner/domain/entities/customer.entity';
+import { CompanyIdContext } from '@/modules/shared/types/company-id-context.type';
+import { Where } from '@/modules/shared/types/where.type';
 
 @Injectable()
-export class ListCusomerUseCase implements ListCustomerPortIn {
+export class ListCusomerUseCase
+  extends BaseListUseCase<CustomerEntity, CompanyIdContext, CustomerSummaryDTO>
+  implements ListCustomerPortIn
+{
   constructor(
     @Inject(CUSTOMER_REPOSITORY_PORT_TOKEN)
     private readonly customerRepository: CustomerRepositoryPortOut,
-  ) {}
+  ) {
+    super(customerRepository);
+  }
 
-  public async execute(input: {
+  protected getWhere(input: {
     companyId: string;
-  }): Promise<CustomerSummaryDTO[]> {
-    const customersDB = await this.customerRepository.list({
-      companyId: input.companyId,
-    });
-    const customersDTO = customersDB.map((customer) =>
-      CustomerMapper.fromEntityToSummaryDTO(customer),
-    );
-    return customersDTO;
+  }): Where<CustomerEntity> | undefined {
+    return { companyId: input.companyId };
+  }
+
+  protected toOutput(entity: CustomerEntity): CustomerSummaryDTO {
+    return CustomerMapper.fromEntityToSummaryDTO(entity);
   }
 }

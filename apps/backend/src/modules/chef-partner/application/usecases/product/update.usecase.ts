@@ -1,45 +1,51 @@
 import { UpdateProductPortIn } from '@/modules/chef-partner/ports/in/product/update.port';
 import {
-  FormProductResponseDTO,
+  SummaryProductResponseDTO,
   UpdateProductRequestDTO,
 } from '@milnatix-core/dtos';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   PRODUCT_REPOSITORY_PORT_TOKEN,
   ProductRepositoryPortOut,
 } from '@/modules/chef-partner/ports/out/product-repository.port';
 import { ProductMapper } from '../../mappers/product.mapper';
-import { DetailContext } from '@/modules/shared/types/detail-context.type';
+import { IdContext } from '@/modules/shared/types/id-context.type';
 import { ProductEntity } from '@/modules/chef-partner/domain/entities/product.entity';
+import { ProductUniqueValidator } from '../../validators/product/product-unique.validator';
+import { BaseUpdateUseCase } from '@/modules/shared/application/usecases/base-update.usecase';
 
 @Injectable()
-export class UpdateProductUseCase implements UpdateProductPortIn {
+export class UpdateProductUseCase
+  extends BaseUpdateUseCase<
+    ProductEntity,
+    IdContext<UpdateProductRequestDTO>,
+    SummaryProductResponseDTO
+  >
+  implements UpdateProductPortIn
+{
   constructor(
     @Inject(PRODUCT_REPOSITORY_PORT_TOKEN)
     private readonly productRepository: ProductRepositoryPortOut,
-  ) {}
+    private readonly productUniqueValidator: ProductUniqueValidator,
+  ) {
+    super(productRepository, [productUniqueValidator]);
+  }
 
-  public async execute(
-    dto: DetailContext<UpdateProductRequestDTO>,
-  ): Promise<FormProductResponseDTO> {
-    const productInDB = await this.productRepository.findOne({
-      id: dto.id,
-      companyId: dto.companyId,
+  protected getNotFoundMessage(): string {
+    return 'Produto nao encontrado';
+  }
+
+  protected toEntity(
+    input: IdContext<UpdateProductRequestDTO>,
+    current: ProductEntity,
+  ): ProductEntity {
+    return new ProductEntity({
+      ...current,
+      ...input.payload,
     });
-    if (!productInDB) {
-      throw new NotFoundException('Produto nao encontrado');
-    }
+  }
 
-    const productToUpdate = new ProductEntity({
-      ...productInDB,
-      ...dto.payload,
-    });
-
-    const productUpdated = await this.productRepository.update(
-      dto.id,
-      productToUpdate,
-    );
-
-    return ProductMapper.entityToFormResponseDTO(productUpdated);
+  protected toOutput(entity: ProductEntity): SummaryProductResponseDTO {
+    return ProductMapper.entityToFormResponseDTO(entity);
   }
 }

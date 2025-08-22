@@ -24,7 +24,7 @@ import {
 } from '@/modules/chef-partner/ports/in/product/list.port';
 import {
   FormProductRequestDTO,
-  FormProductResponseDTO,
+  SummaryProductResponseDTO,
   ListProductResponseDTO,
   ProductDetailsResponseDTO,
   UpdateProductRequestDTO,
@@ -63,9 +63,9 @@ export class ProductController {
   public async create(
     @Body() productRequestDTO: FormProductRequestDTO,
     @CompanyId() companyId: string,
-  ): Promise<FormProductResponseDTO> {
+  ): Promise<SummaryProductResponseDTO> {
     return await this.createProductUseCase.execute({
-      ...productRequestDTO,
+      payload: productRequestDTO,
       companyId,
     });
   }
@@ -79,33 +79,26 @@ export class ProductController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async delete(
-    @Param('id') id: string,
-    @CompanyId() companyId: string,
-  ): Promise<void> {
-    await this.deleteProductUseCase.execute({ id, companyId });
+  public async delete(@Param('id') id: string): Promise<void> {
+    await this.deleteProductUseCase.execute({ id });
   }
 
   @Get(':productId')
   public async getDetails(
     @Param('productId') id: string,
-    @CompanyId() companyId: string,
   ): Promise<ProductDetailsResponseDTO> {
     return await this.getProductDetailsUseCase.execute({
       id,
-      companyId,
     });
   }
 
   @Patch(':productId')
   public async update(
     @Param('productId') productId: string,
-    @CompanyId() companyId: string,
     @Body() product: UpdateProductRequestDTO,
-  ): Promise<FormProductResponseDTO> {
+  ): Promise<SummaryProductResponseDTO> {
     return await this.updateProductUseCase.execute({
       id: productId,
-      companyId,
       payload: product,
     });
   }

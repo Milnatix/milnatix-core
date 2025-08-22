@@ -30,6 +30,20 @@ import { UpdateCustomerUseCase } from './usecases/customer/update.usecase';
 import { DELETE_CUSTOMER_PORT_IN_TOKEN } from '../ports/in/customer/delete.port';
 import { DeleteCustomerUseCase } from './usecases/customer/delete.usecase';
 import { CustomerUniqueValidator } from './validators/customer/customer-unique.validator';
+import { ProductUniqueValidator } from './validators/product/product-unique.validator';
+import { CustomerAddressController } from './controllers/customer-address.controller';
+import { CREATE_CUSTOMER_ADDRESS_PORT_IN_TOKEN } from '../ports/in/customer-address/create.port';
+import { CreateCustomerAddressUseCase } from './usecases/customer-address/create.usecase';
+import { GET_CUSTOMER_ADDRESS_DETAILS_PORT_IN } from '../ports/in/customer-address/get-detais.port';
+import { GetCustomerAddressDetailUseCase } from './usecases/customer-address/detail.usecase';
+import { UPDATE_CUSTOMER_ADDRESS_PORT_IN_TOKEN } from '../ports/in/customer-address/update.port';
+import { UpdateCustomerAddressUseCase } from './usecases/customer-address/update.usecase';
+import { DELETE_CUSTOMER_ADDRESS_PORT_IN_TOKEN } from '../ports/in/customer-address/delete.port';
+import { DeleteCustomerAddressUseCase } from './usecases/customer-address/delete.usecase';
+import { LIST_CUSTOMER_ADDRESS_PORT_IN_TOKEN } from '../ports/in/customer-address/list.port';
+import { ListCustomerAddressUseCase } from './usecases/customer-address/list.usecase';
+import { CustomerExistsValidator } from './validators/customer/customer-exists.validator';
+import { UniqueAddressToCustomerValidator } from './validators/customer-address/unique-address-to-customer.validator';
 
 const useCases: Provider[] = [
   {
@@ -72,6 +86,26 @@ const useCases: Provider[] = [
     provide: DELETE_CUSTOMER_PORT_IN_TOKEN,
     useClass: DeleteCustomerUseCase,
   },
+  {
+    provide: CREATE_CUSTOMER_ADDRESS_PORT_IN_TOKEN,
+    useClass: CreateCustomerAddressUseCase,
+  },
+  {
+    provide: GET_CUSTOMER_ADDRESS_DETAILS_PORT_IN,
+    useClass: GetCustomerAddressDetailUseCase,
+  },
+  {
+    provide: UPDATE_CUSTOMER_ADDRESS_PORT_IN_TOKEN,
+    useClass: UpdateCustomerAddressUseCase,
+  },
+  {
+    provide: DELETE_CUSTOMER_ADDRESS_PORT_IN_TOKEN,
+    useClass: DeleteCustomerAddressUseCase,
+  },
+  {
+    provide: LIST_CUSTOMER_ADDRESS_PORT_IN_TOKEN,
+    useClass: ListCustomerAddressUseCase,
+  },
 ];
 
 const adapters: Provider[] = [
@@ -89,11 +123,20 @@ const adapters: Provider[] = [
   },
 ];
 
-const validators: Provider[] = [CustomerUniqueValidator];
+const validators: Provider[] = [
+  CustomerUniqueValidator,
+  CustomerExistsValidator,
+  ProductUniqueValidator,
+  UniqueAddressToCustomerValidator,
+];
 
 @Module({
   providers: [...useCases, ...adapters, ...validators],
-  controllers: [ProductController, CustomerController],
+  controllers: [
+    ProductController,
+    CustomerController,
+    CustomerAddressController,
+  ],
   imports: [SharedModule, AccountsModule],
 })
 export class ChefPartnerModule {}

@@ -6,11 +6,12 @@ import {
   CUSTOMER_REPOSITORY_PORT_TOKEN,
   CustomerRepositoryPortOut,
 } from '@/modules/chef-partner/ports/out/customer-repository.port';
+import { ValidatorPort } from '@/modules/shared/ports/out/validator.port';
 import { Where } from '@/modules/shared/types/where.type';
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class CustomerUniqueValidator {
+export class CustomerUniqueValidator implements ValidatorPort<CustomerEntity> {
   constructor(
     @Inject(CUSTOMER_REPOSITORY_PORT_TOKEN)
     private readonly customerRepository: CustomerRepositoryPortOut,
@@ -77,19 +78,15 @@ export class CustomerUniqueValidator {
     throw new ConflictException(`Dados já existentes no banco${fieldsMessage}`);
   }
 
-  public async ensureUnique(
-    customerToValidate: CustomerEntity,
-    companyId: string,
-    excludeId?: string,
-  ): Promise<void> {
+  public async validate(customerToValidate: CustomerEntity): Promise<void> {
     const orConditions = this.buildUniqueConditions(customerToValidate);
     if (!orConditions.length) return;
 
     const where: Where<CustomerEntity> = {
       $and: [
         orConditions.length > 1 ? { $or: orConditions } : orConditions[0],
-        { companyId },
-        ...(excludeId ? [{ id: { not: excludeId } }] : []),
+        { companyId: customerToValidate.companyId },
+        { id: { not: customerToValidate.id } },
       ],
     };
 

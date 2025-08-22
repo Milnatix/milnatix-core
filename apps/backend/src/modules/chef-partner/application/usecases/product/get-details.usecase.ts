@@ -6,7 +6,7 @@ import {
   ProductRepositoryPortOut,
 } from '@/modules/chef-partner/ports/out/product-repository.port';
 import { ProductMapper } from '../../mappers/product.mapper';
-import { DetailContext } from '@/modules/shared/types/detail-context.type';
+import { IdContext } from '@/modules/shared/types/id-context.type';
 
 @Injectable()
 export class GetProductDetailsUseCase implements GetProductDetailsPortIn {
@@ -15,12 +15,9 @@ export class GetProductDetailsUseCase implements GetProductDetailsPortIn {
     private readonly productRepository: ProductRepositoryPortOut,
   ) {}
 
-  public async execute(
-    input: DetailContext,
-  ): Promise<ProductDetailsResponseDTO> {
+  public async execute(input: IdContext): Promise<ProductDetailsResponseDTO> {
     const product = await this.productRepository.findOne({
       id: input.id,
-      companyId: input.companyId,
     });
 
     if (!product) {

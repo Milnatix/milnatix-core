@@ -1,7 +1,7 @@
 import { ProductEntity } from '../../domain/entities/product.entity';
 import {
   FormProductRequestDTO,
-  FormProductResponseDTO,
+  SummaryProductResponseDTO,
   ListProductResponseDTO,
   ProductDetailsResponseDTO,
 } from '@milnatix-core/dtos';
@@ -11,13 +11,20 @@ export class ProductMapper {
   public static createInputDTOToEntity(
     productDTO: CompanyIdContext<FormProductRequestDTO>,
   ): ProductEntity {
-    return new ProductEntity({ ...productDTO, isAvailable: true });
+    return new ProductEntity({
+      ...productDTO.payload,
+      companyId: productDTO.companyId,
+      isAvailable: true,
+    });
   }
 
   public static entityToFormResponseDTO(
     product: ProductEntity,
-  ): FormProductResponseDTO {
-    return new FormProductResponseDTO({ id: product.id, name: product.name });
+  ): SummaryProductResponseDTO {
+    return new SummaryProductResponseDTO({
+      id: product.id,
+      name: product.name,
+    });
   }
 
   public static entityToListDTO(

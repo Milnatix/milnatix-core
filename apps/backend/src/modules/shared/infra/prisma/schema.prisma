@@ -15,6 +15,14 @@ enum ChefPartnerOrderStatus {
   CANCELLED
 }
 
+enum PaymentType {
+  DIGITAL
+  CARD
+  CASH
+  VOUCHER
+  OTHER
+}
+
 model User {
   id          String             @id @default(uuid())
   email       String             @unique
@@ -180,4 +188,16 @@ model ChefPartnerOrderItem {
   @@index([orderId])
   @@index([productId])
   @@map("ChefPartner_OrderItems")
+}
+
+model FinancialPaymentMethod {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  type      PaymentType
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  deletedAt DateTime?
+
+  @@map("Financial_PaymentMethod")
 }

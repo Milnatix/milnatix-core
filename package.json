@@ -8,8 +8,10 @@
     "db:down": "sudo docker compose down",
     "db:logs": "sudo docker compose logs -f postgres",
     "db:psql": "sudo docker exec -it milnatix-core-postgres psql -U devuser -d milnatix",
-    "start:chefpartner": "pnpm --filter @milnatix-core/chef-partner run dev & pnpm --filter @milnatix-core/backend run start:dev",
-    "build:dtos": "pnpm --filter @milnatix-core/dtos run build"
+    "start:cp": "pnpm --filter @milnatix-core/chef-partner run dev & pnpm --filter @milnatix-core/backend run start:dev",
+    "build:dtos": "pnpm --filter @milnatix-core/dtos run build",
+    "prisma:migrate": "pnpm --filter @milnatix-core/backend run prisma:migrate",
+    "prisma:gen": "pnpm --filter @milnatix-core/backend run prisma:gen"
   },
   "keywords": [],
   "author": "",

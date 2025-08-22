@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import TextArea from '@/components/atom/TextArea';
 import { useAlertStore } from '@/shared/stores/alert.store';
-import { FormProductResponseDTO } from '@milnatix-core/dtos';
+import { SummaryProductResponseDTO } from '@milnatix-core/dtos';
 import { Result } from '@/shared/types/Result.type';
 
 interface ProductFormProps {
@@ -20,7 +20,7 @@ interface ProductFormProps {
   onSubmit: (
     product: ProductFormData,
   ) => Promise<
-    Result<FormProductResponseDTO, { message: string; status?: number }>
+    Result<SummaryProductResponseDTO, { message: string; status?: number }>
   >;
   productInitialData?: ProductFormData | null;
   loading?: boolean;

@@ -64,7 +64,7 @@ export class CustomerController {
     @CompanyId() companyId: string,
   ): Promise<CustomerSummaryDTO> {
     return await this.createCustomerUseCase.execute({
-      ...customerRequestDTO,
+      payload: customerRequestDTO,
       companyId,
     });
   }
@@ -81,31 +81,25 @@ export class CustomerController {
   @HttpCode(HttpStatus.OK)
   public async getDetails(
     @Param('id') id: string,
-    @CompanyId() companyId: string,
   ): Promise<CustomerDetailResponseDTO> {
-    return await this.getCustomerDetailsUseCase.execute({ id, companyId });
+    return await this.getCustomerDetailsUseCase.execute({ id });
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   public async update(
     @Param('id') id: string,
-    @CompanyId() companyId: string,
     @Body() customerRequestDTO: UpdateCustomerRequestDTO,
   ): Promise<CustomerSummaryDTO> {
     return await this.updateCustomerUseCase.execute({
       id,
-      companyId,
       payload: customerRequestDTO,
     });
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async delete(
-    @Param('id') id: string,
-    @CompanyId() companyId: string,
-  ): Promise<void> {
-    await this.deleteCustomerUseCase.execute({ id, companyId });
+  public async delete(@Param('id') id: string): Promise<void> {
+    await this.deleteCustomerUseCase.execute({ id });
   }
 }

@@ -1,6 +1,6 @@
 import {
   FormProductRequestDTO,
-  FormProductResponseDTO,
+  SummaryProductResponseDTO,
   ListProductResponseDTO,
   ProductDetailsResponseDTO,
   UpdateProductRequestDTO,
@@ -10,7 +10,7 @@ import { BaseCrudService } from './base-crud.service';
 export class ProductService extends BaseCrudService<
   FormProductRequestDTO,
   UpdateProductRequestDTO,
-  FormProductResponseDTO,
+  SummaryProductResponseDTO,
   ProductDetailsResponseDTO,
   ListProductResponseDTO
 > {

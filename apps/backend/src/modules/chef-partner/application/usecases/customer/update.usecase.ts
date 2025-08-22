@@ -1,10 +1,10 @@
 import {
-  FormProductResponseDTO,
+  CustomerSummaryDTO,
   UpdateCustomerRequestDTO,
 } from '@milnatix-core/dtos';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
-import { DetailContext } from '@/modules/shared/types/detail-context.type';
+import { IdContext } from '@/modules/shared/types/id-context.type';
 import { UpdateCustomerPortIn } from '@/modules/chef-partner/ports/in/customer/update.port';
 import {
   CUSTOMER_REPOSITORY_PORT_TOKEN,
@@ -13,43 +13,40 @@ import {
 import { CustomerMapper } from '../../mappers/customer.mapper';
 import { CustomerUniqueValidator } from '../../validators/customer/customer-unique.validator';
 import { CustomerEntity } from '@/modules/chef-partner/domain/entities/customer.entity';
+import { BaseUpdateUseCase } from '@/modules/shared/application/usecases/base-update.usecase';
 
 @Injectable()
-export class UpdateCustomerUseCase implements UpdateCustomerPortIn {
+export class UpdateCustomerUseCase
+  extends BaseUpdateUseCase<
+    CustomerEntity,
+    IdContext<UpdateCustomerRequestDTO>,
+    CustomerSummaryDTO
+  >
+  implements UpdateCustomerPortIn
+{
   constructor(
     @Inject(CUSTOMER_REPOSITORY_PORT_TOKEN)
     private readonly customerRepository: CustomerRepositoryPortOut,
     private readonly customerUniqueValidator: CustomerUniqueValidator,
-  ) {}
+  ) {
+    super(customerRepository, [customerUniqueValidator]);
+  }
 
-  public async execute(
-    dto: DetailContext<UpdateCustomerRequestDTO>,
-  ): Promise<FormProductResponseDTO> {
-    const customerInDB = await this.customerRepository.findOne({
-      id: dto.id,
-      companyId: dto.companyId,
+  protected getNotFoundMessage(): string {
+    return 'Cliente não encontrado';
+  }
+
+  protected toEntity(
+    input: IdContext<UpdateCustomerRequestDTO>,
+    current: CustomerEntity,
+  ): CustomerEntity {
+    return new CustomerEntity({
+      ...current,
+      ...input.payload,
     });
+  }
 
-    if (!customerInDB) {
-      throw new NotFoundException('Customer nao encontrado');
-    }
-
-    const customerToUpdate = new CustomerEntity({
-      ...customerInDB,
-      ...dto.payload,
-    });
-
-    await this.customerUniqueValidator.ensureUnique(
-      customerToUpdate,
-      customerToUpdate.companyId,
-      customerToUpdate.id,
-    );
-
-    const customerUpdated = await this.customerRepository.update(
-      dto.id,
-      customerToUpdate,
-    );
-
-    return CustomerMapper.fromEntityToSummaryDTO(customerUpdated);
+  protected toOutput(entity: CustomerEntity): CustomerSummaryDTO {
+    return CustomerMapper.fromEntityToSummaryDTO(entity);
   }
 }

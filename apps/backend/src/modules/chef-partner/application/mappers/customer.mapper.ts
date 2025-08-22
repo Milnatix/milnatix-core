@@ -2,6 +2,7 @@ import {
   CreateCustomerRequestDTO,
   CustomerDetailResponseDTO,
   CustomerSummaryDTO,
+  SummaryCustomerAddressDTO,
 } from '@milnatix-core/dtos';
 import { CustomerEntity } from '../../domain/entities/customer.entity';
 import { CustomerAddressEntity } from '../../domain/entities/customer-address.entity';
@@ -34,13 +35,20 @@ export class CustomerMapper {
     customer: CustomerEntity,
     addresses: CustomerAddressEntity[],
   ): CustomerDetailResponseDTO {
+    const addressesDTO: SummaryCustomerAddressDTO[] = addresses.map(
+      (address) => ({
+        id: address.id,
+        street: address.street,
+        number: address.number,
+      }),
+    );
     return new CustomerDetailResponseDTO({
       fullName: customer.fullName,
       email: customer.email,
       phone: customer.phone,
       federalDocument: customer.federalDocument,
       note: customer.note,
-      addresses,
+      addresses: addressesDTO,
     });
   }
 }
