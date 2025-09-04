@@ -201,3 +201,20 @@ model FinancialPaymentMethod {
 
   @@map("Financial_PaymentMethod")
 }
+
+model FinancialVendor {
+  id              String    @id @default(uuid())
+  corporateName   String?
+  tradingName     String
+  federalDocument String?   @db.VarChar(14)
+  email           String?
+  phone           String?
+  note            String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  @@index([tradingName])
+  @@index([federalDocument])
+  @@map("Financial_Vendors")
+}

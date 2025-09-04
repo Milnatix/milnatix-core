@@ -4,6 +4,7 @@ export function capitalizeName(value: string): string {
   const lowerExceptions = ['da', 'de', 'do', 'das', 'dos', 'e'];
 
   return value
+    .trim()
     .split(' ')
     .map((word) => {
       if (/^([A-Z]\.)+[A-Z]?\.?$/.test(word)) {
