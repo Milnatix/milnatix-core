@@ -12,9 +12,10 @@ export class ProductService extends BaseCrudService<
   UpdateProductRequestDTO,
   SummaryProductResponseDTO,
   ProductDetailsResponseDTO,
-  ListProductResponseDTO
+  ListProductResponseDTO,
+  void
 > {
-  constructor() {
-    super('/chef-partner/product');
+  protected getBaseUrl(urlParams: unknown): string {
+    return `/chef-partner/product`;
   }
 }

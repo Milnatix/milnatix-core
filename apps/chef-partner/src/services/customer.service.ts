@@ -11,9 +11,10 @@ export class CustomerService extends BaseCrudService<
   UpdateCustomerRequestDTO,
   CustomerSummaryDTO,
   CustomerDetailResponseDTO,
-  CustomerSummaryDTO
+  CustomerSummaryDTO,
+  void
 > {
-  constructor() {
-    super('/chef-partner/customer');
+  protected getBaseUrl(urlParams: unknown): string {
+    return '/chef-partner/customer';
   }
 }

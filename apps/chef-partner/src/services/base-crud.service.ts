@@ -8,8 +8,9 @@ export abstract class BaseCrudService<
   SummaryResDTO,
   DetailResDTO,
   ListResDTO,
+  URLParams = unknown,
 > {
-  constructor(private readonly baseUrl: string) {}
+  protected abstract getBaseUrl(urlParams: URLParams): string;
 
   protected async request<T>(
     config: HttpRequest & { headers?: Record<string, string> },
@@ -30,49 +31,53 @@ export abstract class BaseCrudService<
 
   public create(
     data: CreateReqDTO,
+    urlParams: URLParams,
   ): Promise<Result<SummaryResDTO, { message: string; status?: number }>> {
     return this.request<SummaryResDTO>({
       method: 'POST',
-      url: this.baseUrl,
+      url: this.getBaseUrl(urlParams),
       body: data,
     });
   }
 
   public getDetails(
     id: string,
+    urlParams: URLParams,
   ): Promise<Result<DetailResDTO, { message: string; status?: number }>> {
     return this.request<DetailResDTO>({
       method: 'GET',
-      url: `${this.baseUrl}/${id}`,
+      url: `${this.getBaseUrl(urlParams)}/${id}`,
     });
   }
 
-  public list(): Promise<
-    Result<ListResDTO[], { message: string; status?: number }>
-  > {
+  public list(
+    urlParams: URLParams,
+  ): Promise<Result<ListResDTO[], { message: string; status?: number }>> {
     return this.request<ListResDTO[]>({
       method: 'GET',
-      url: this.baseUrl,
+      url: this.getBaseUrl(urlParams),
     });
   }
 
   public update(
     id: string,
     data: UpdateReqDTO,
+    urlParams: URLParams,
   ): Promise<Result<SummaryResDTO, { message: string; status?: number }>> {
     return this.request<SummaryResDTO>({
       method: 'PATCH',
-      url: `${this.baseUrl}/${id}`,
+      url: `${this.getBaseUrl(urlParams)}/${id}`,
       body: data,
     });
   }
 
   public delete(
     id: string,
+    urlParams: URLParams,
   ): Promise<Result<void, { message: string; status?: number }>> {
     return this.request<void>({
       method: 'DELETE',
-      url: `${this.baseUrl}/${id}`,
+      url: `${this.getBaseUrl(urlParams)}/${id}`,
     });
   }
 }

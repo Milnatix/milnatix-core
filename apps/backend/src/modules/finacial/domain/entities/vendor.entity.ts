@@ -24,11 +24,15 @@ export class VendorEntity extends BaseEntity implements VendorEntityProps {
 
   constructor(props: VendorEntityProps) {
     super(props);
-    this.corporateName = props.corporateName ? capitalizeName(props.corporateName) : null;
+    this.corporateName = props.corporateName
+      ? capitalizeName(props.corporateName)
+      : null;
     this.tradingName = capitalizeName(props.tradingName.trim());
-    this.federalDocument = props.federalDocument ? removeNonDigits(props.federalDocument) : null;
+    this.federalDocument = props.federalDocument
+      ? removeNonDigits(props.federalDocument)
+      : null;
     this.email = props.email?.trim().toLowerCase() ?? null;
-    this.phone = props.phone ? removeNonDigits(props.federalDocument) : null;
+    this.phone = props.phone ? removeNonDigits(props.phone) : null;
     this.note = props.note?.trim() ?? null;
   }
 }

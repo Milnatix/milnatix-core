@@ -7,6 +7,8 @@ import {
 import Input from '@/components/atom/Input';
 import MaskedInput from '@/components/atom/MaskedInput';
 import TextArea from '@/components/atom/TextArea';
+import ListItem from '@/components/molecule/ListItem';
+import List from '@/components/organism/List';
 import FormTemplate from '@/components/template/FormTemplate';
 import { useAlertStore } from '@/shared/stores/alert.store';
 import { Result } from '@/shared/types/Result.type';
@@ -15,9 +17,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   CustomerDetailResponseDTO,
   CustomerSummaryDTO,
+  SummaryCustomerAddressDTO,
 } from '@milnatix-core/dtos';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 interface CustomerFormProps {
@@ -39,6 +42,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
 }) => {
   const router = useRouter();
   const { showAlert } = useAlertStore();
+  const [addresses, setAddresses] = useState<SummaryCustomerAddressDTO[]>([]);
 
   const {
     register,
@@ -56,6 +60,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
   useEffect(() => {
     if (customerInitialData) {
       reset(customerInitialData);
+      setAddresses(customerInitialData.addresses);
     }
   }, [customerInitialData, reset]);
 
@@ -124,6 +129,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
         label="Anotações"
         {...register('note')}
         error={errors.note?.message}
+      />
+
+      <List
+        items={addresses}
+        renderItem={(address) => (
+          <ListItem title={`${address.street}, ${address.number}`} />
+        )}
       />
     </FormTemplate>
   );
