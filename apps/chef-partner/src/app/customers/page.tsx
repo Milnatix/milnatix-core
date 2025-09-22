@@ -6,7 +6,7 @@ import { CustomerService } from '@/services/customer.service';
 import { useAlertStore } from '@/shared/stores/alert.store';
 import { CustomerSummaryDTO } from '@milnatix-core/dtos';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const customerService = new CustomerService();
 

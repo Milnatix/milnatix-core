@@ -121,7 +121,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
             value={field.value || undefined}
             onValueChange={(unmasked) => field.onChange(unmasked)}
             label="CPF/CNPJ"
-            error={errors.federalDocument?.message as string | undefined}
+            error={errors.federalDocument?.message}
           />
         )}
       />

@@ -22,7 +22,7 @@ const MaskedInput: React.FC<MaskedInputProps> = ({
     { mask: maskPattern },
     {
       ref: inputRef,
-      onAccept: (masked: string, maskInstance: any) => {
+      onAccept: (masked: string, maskInstance) => {
         onChange?.({
           target: { value: masked },
         } as unknown as React.ChangeEvent<HTMLInputElement>);

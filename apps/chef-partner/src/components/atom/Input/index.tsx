@@ -18,9 +18,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     useEffect(() => {
       // mais robusto: checar value e defaultValue
-      const val = (rest.value ?? (rest as any).defaultValue ?? '') as string;
+      const val = (rest.value ?? rest.defaultValue ?? '') as string;
       setFilled(Boolean(val && val.toString().length > 0));
-    }, [rest.value, (rest as any).defaultValue]);
+    }, [rest.value, rest.defaultValue]);
 
     return (
       <div className={`relative w-full max-w-md ${className}`}>
@@ -29,7 +29,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref} // <-- ESSENCIAL: encaminha a ref do forwardRef para o elemento DOM
           placeholder={placeholder || ' '}
           aria-invalid={!!error}
-          maxLength={(rest as any).maxLength ?? 255}
+          maxLength={rest.maxLength ?? 255}
           aria-describedby={
             error
               ? `${inputId}-error`
